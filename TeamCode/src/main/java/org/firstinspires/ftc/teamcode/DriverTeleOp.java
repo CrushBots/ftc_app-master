@@ -89,7 +89,7 @@ public class DriverTeleOp extends CommonFunctions {
         double zoomRight = rightPower * speedControl;
         telemetry.addData("Right Speed: ", zoomRight);
 
-        robot.setDrivePower((leftPower * speedControl), (rightPower * speedControl));
+      // robot.setDrivePower((leftPower * speedControl), (rightPower * speedControl));
 
         /*
          * Co-Driver - Right Joy Stick - Center Lift

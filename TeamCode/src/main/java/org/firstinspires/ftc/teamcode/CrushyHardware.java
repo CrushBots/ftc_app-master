@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -75,7 +76,7 @@ import static java.lang.Thread.sleep;
         // Set the direction of the motors to FORWARD or REVERSE
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.FORWARD );
         rightBack.setDirection(DcMotor.Direction.FORWARD);
         upperCenterLift.setDirection(DcMotor.Direction.FORWARD);
         lowerCenterLift.setDirection(DcMotor.Direction.FORWARD);
@@ -158,11 +159,31 @@ import static java.lang.Thread.sleep;
 
     }
 
-    public void setDrivePower (double leftPower, double rightPower){
-        leftFront.setPower(leftPower);
-        leftBack.setPower(leftPower);
-        rightFront.setPower(rightPower);
-        rightBack.setPower(rightPower);
+    public void setDrivePower (double leftFrontPower, double rightFrontPower, double leftBackPower, double rightBackPower){
+        double max = 1.0;
+
+        // Normalize the values so neither exceed +/- 1.0
+        if (Math.abs(leftFrontPower) > max) {
+            max = Math.abs(leftFrontPower);
+        }
+
+        if (Math.abs(rightFrontPower) > max) {
+            max = Math.abs(rightFrontPower);
+        }
+
+        if (Math.abs(leftBackPower) > max) {
+            max = Math.abs(leftBackPower);
+        }
+
+        if (Math.abs(rightBackPower) > max) {
+            max = Math.abs(rightBackPower);
+        }
+
+        // Set the power of each motor. Divide by max to avoid invalid values.
+        leftFront.setPower(leftFrontPower / max);
+        rightFront.setPower(rightFrontPower / max);
+        leftBack.setPower(leftBackPower / max);
+        rightBack.setPower(rightBackPower / max);
     }
 
     /***

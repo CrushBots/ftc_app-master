@@ -58,26 +58,26 @@ public class Auto_BlueLeft extends Auto_CommonFunctions {
         }
 
         sleep (250);
-        robot.setDrivePower(0.0,0.0);
+        robot.setDrivePower(0.0,0.0, 0.0, 0.0);
 
         // Step 4: Bring jewel arm back up
         raiseJewelArm();
         sleep(200);
 
         // Step 5: Drive into safe zone
-        robot.setDrivePower(-0.4,-0.4);
+        robot.setDrivePower(-0.4, -0.4, -0.4, -0.4);
         sleep(2000);
-        robot.setDrivePower(0.0,0.0);
+        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
 
         // Step 6: Turn towards crypto box
-        robot.setDrivePower(-0.5,0.5);
+        robot.setDrivePower(-0.5, 0.5, -0.5, 0.5);
         sleep(2500);
-        robot.setDrivePower(0.0,0.0);
+        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
 
         // Step 7: Drive forward
-        robot.setDrivePower(0.4,0.4);
+        robot.setDrivePower(0.4, 0.4, 0.4, 0.4);
         sleep(1000);
-        robot.setDrivePower(0.0,0.0);
+        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
 
         // Step 8: place glyph in crypto box
         lowerGlyph();
@@ -85,14 +85,13 @@ public class Auto_BlueLeft extends Auto_CommonFunctions {
         robot.rightGlyphServo.setPosition(robot.RIGHT_GLYPH_SERVO_OPEN_POS);
 
         // Step 9: Go Forward
-        robot.setDrivePower(0.4,0.4);
+        robot.setDrivePower(0.4, 0.4, 0.4, 0.4);
         sleep(1000);
-        robot.setDrivePower(0.0,0.0);
+        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
 
         // Step 9: Back up
-        robot.setDrivePower(-0.4,-0.4);
+        robot.setDrivePower(-0.4, -0.4, -0.4, -0.4);
         sleep(1000);
-        robot.setDrivePower(0.0,0.0);
-
+        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
     }
 }
