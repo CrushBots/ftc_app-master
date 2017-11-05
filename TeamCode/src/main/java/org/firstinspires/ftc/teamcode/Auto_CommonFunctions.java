@@ -82,7 +82,7 @@ public class Auto_CommonFunctions extends LinearOpMode {
         robot.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        robot.setDrivePower(0.4, 0.4);
+        robot.setDrivePower(0.4, 0.4, 0.4, 0.4);
 
         double start = runtime.milliseconds();
 
@@ -92,7 +92,7 @@ public class Auto_CommonFunctions extends LinearOpMode {
             }
         }
 
-        robot.setDrivePower(0, 0);
+        robot.setDrivePower(0, 0, 0, 0);
 
     }
 
@@ -201,14 +201,14 @@ public class Auto_CommonFunctions extends LinearOpMode {
         double targetHeading = heading - degrees;
 
         while(heading > targetHeading) {
-            robot.setDrivePower(0.4,-0.4);
+            robot.setDrivePower(0.4, -0.4, 0.4, -0.4);
 
             angles = robot.gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
             heading = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
             heading = convertHeading(heading);
         }
 
-        robot.setDrivePower(0.0,0.0);
+        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
     }
 
     public void turnLeft(int degrees){
@@ -225,14 +225,14 @@ public class Auto_CommonFunctions extends LinearOpMode {
         double targetHeading = heading + degrees;
 
         while(heading < targetHeading) {
-            robot.setDrivePower(-0.4,0.4);
+            robot.setDrivePower(-0.4, 0.4, -0.4, 0.4);
 
             angles = robot.gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
             heading = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
             heading = convertHeading(heading);
         }
 
-        robot.setDrivePower(0.0,0.0);
+        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
     }
 
     double convertHeading (double heading){
