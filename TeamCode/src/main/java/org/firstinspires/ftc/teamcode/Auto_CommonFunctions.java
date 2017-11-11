@@ -49,12 +49,11 @@ public class Auto_CommonFunctions extends LinearOpMode {
     }
 
     public void DriveInches (int inches) {
-
         int targetTicks = 0;
 
         // Diameter of wheel is 4 inches
         // Circumference of wheel is 12.566 inches
-        // Ticks per revelotion is 1220
+        // Ticks per revolution is 1220
 
         //double WheelDiameter = 2.88;
         //double WheelCircumfrence = WheelDiameter * Math.PI;
@@ -82,7 +81,7 @@ public class Auto_CommonFunctions extends LinearOpMode {
         robot.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        robot.setDrivePower(0.4, 0.4, 0.4, 0.4);
+        robotDrive(0.4);
 
         double start = runtime.milliseconds();
 
@@ -92,8 +91,33 @@ public class Auto_CommonFunctions extends LinearOpMode {
             }
         }
 
-        robot.setDrivePower(0, 0, 0, 0);
+        robotStop();
+    }
 
+    public void robotStop() {
+        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
+    }
+
+    public void robotDrive(double power) {
+        robot.setDrivePower(power, power, power, power);
+    }
+
+    public void robotStrafe(double power, String direction) {
+        if (direction == "left") {
+            robot.setDrivePower(-power, power, power, -power);
+        }
+        else {
+            robot.setDrivePower(power, -power, -power, power);
+        }
+    }
+
+    public void robotRotate(double power, String direction) {
+        if (direction == "left") {
+            robot.setDrivePower(-power, power, -power, power);
+        }
+        else {
+            robot.setDrivePower(power, -power, power, -power);
+        }
     }
 
     public void raiseJewelArm() {

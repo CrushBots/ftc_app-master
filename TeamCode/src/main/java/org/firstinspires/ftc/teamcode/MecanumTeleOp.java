@@ -28,9 +28,9 @@ public class MecanumTeleOp extends CommonFunctions {
     public void loop() {
         telemetry.addData("Status", "Running: " + runtime.toString());
 
-        double x1;
-        double y1;
-        double x2;
+        double drive;
+        double strafe;
+        double rotate;
         double leftFrontPower;
         double rightFrontPower;
         double leftBackPower;
@@ -40,15 +40,15 @@ public class MecanumTeleOp extends CommonFunctions {
          * Driver - Left Joy Stick - Forward / Reverse
          * Driver - Right Joy Stick - Left / Right
          */
-        y1 = -gamepad1.left_stick_y;
-        x1 = gamepad1.left_stick_x;
-        x2 = gamepad1.right_stick_x;
+        drive = -gamepad1.left_stick_y;
+        strafe = gamepad1.left_stick_x;
+        rotate = gamepad1.right_stick_x;
 
         // calculate the base power of each motor based on x1 and y1
-        leftFrontPower = y1 + x1 + x2;
-        rightFrontPower = y1 - x1 - x2;
-        leftBackPower = y1 - x1 + x2;
-        rightBackPower = y1 + x1 - x2;
+        leftFrontPower = drive + strafe + rotate;
+        rightFrontPower = drive - strafe - rotate;
+        leftBackPower = drive - strafe + rotate;
+        rightBackPower = drive + strafe - rotate;
 
         robot.setDrivePower(leftFrontPower, rightFrontPower, leftBackPower, rightBackPower);
     }
