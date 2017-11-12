@@ -13,6 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 
 import java.util.Locale;
 
@@ -33,19 +35,6 @@ public class Auto_CommonFunctions extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
-        /*
-         * Initialize the drive system variables.
-         * The init() method of the hardware class does all the work here
-         */
-        //robot.init(hardwareMap);
-
-
-        // Wait for the game to start (driver presses PLAY)
-        //waitForStart();
-
-        //sleep(1000);     // pause for servos to move
-
     }
 
     public void DriveInches (int inches) {
@@ -60,36 +49,41 @@ public class Auto_CommonFunctions extends LinearOpMode {
         //distance = distance / WheelCircumfrence;
         //double targetDistance = distance * 1120;
 
-        targetTicks = 97 * inches;
+        targetTicks = 120 * inches;
 
         robot.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        //robot.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // Wait for encoders reset
-        while(robot.rightBack.getCurrentPosition() != 0 && robot.rightFront.getCurrentPosition() != 0){}
-        while(robot.leftBack.getCurrentPosition() != 0 && robot.leftFront.getCurrentPosition() != 0){}
+        //while(robot.rightBack.getCurrentPosition() != 0 && robot.rightFront.getCurrentPosition() != 0){}
+        while (robot.leftFront.getCurrentPosition() != 0){}
 
-        robot.leftFront.setTargetPosition((int) targetTicks);
-        robot.leftBack.setTargetPosition((int) targetTicks);
-        robot.rightFront.setTargetPosition((int) targetTicks);
-        robot.rightBack.setTargetPosition((int) targetTicks);
+        //robot.leftFront.setTargetPosition((int) targetTicks);
+        //robot.leftBack.setTargetPosition((int) targetTicks);
+        //robot.rightFront.setTargetPosition((int) targetTicks);
+        //robot.rightBack.setTargetPosition((int) targetTicks);
 
-        robot.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //robot.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //robot.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //robot.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //robot.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //int currentPosition = robot.leftFront.getCurrentPosition();
+        //telemetry.addData("CurrentPostion: ", currentPosition);
+        //telemetry.update();
 
         robotDrive(0.4);
 
-        double start = runtime.milliseconds();
+        //double start = runtime.milliseconds();
 
-        while(robot.leftFront.isBusy() || robot.leftBack.isBusy()|| robot.rightFront.isBusy() || robot.rightBack.isBusy()){
-            if (runtime.milliseconds() > start + 500) {
-                break;
-            }
-        }
+        //while(robot.leftFront.isBusy() || robot.leftBack.isBusy()|| robot.rightFront.isBusy() || robot.rightBack.isBusy()){
+        //    if (runtime.milliseconds() > start + 500) {
+        //        break;
+        //    }
+        //}
+
+        while (robot.leftFront.getCurrentPosition() < targetTicks) {}
 
         robotStop();
     }
@@ -273,5 +267,34 @@ public class Auto_CommonFunctions extends LinearOpMode {
 
     String formatDegrees(double degrees){
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
+    }
+
+    public void activateVuMark() {
+        robot.relicTrackables.activate();
+        sleep(1000);
+    }
+
+    public void deactivateVuMark() {
+        robot.relicTrackables.deactivate();
+        sleep(500);
+    }
+
+    public void readVuMark() {
+        /**
+         * See if any of the instances of {@link relicTemplate} are currently visible.
+         * {@link RelicRecoveryVuMark} is an enum which can have the following values:
+         * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
+         * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
+         */
+        robot.vuMark = RelicRecoveryVuMark.from(robot.relicTemplate);
+        if (robot.vuMark != RelicRecoveryVuMark.UNKNOWN) {
+
+                /* Found an instance of the template. In the actual game, you will probably
+                 * loop until this condition occurs, then move on to act accordingly depending
+                 * on which VuMark was visible. */
+            telemetry.addData("VuMark", "%s visible", robot.vuMark);
+        } else {
+            telemetry.addData("VuMark", "not visible");
+        }
     }
 }

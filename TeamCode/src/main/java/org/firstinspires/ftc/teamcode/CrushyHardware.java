@@ -4,9 +4,15 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import static java.lang.Thread.sleep;
 
@@ -31,6 +37,14 @@ import static java.lang.Thread.sleep;
     public Servo jewelArmServo = null;
     public ColorSensor sensorColor;
     public BNO055IMU gyro = null;
+    /**
+     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
+     * localization engine.
+     */
+    VuforiaLocalizer vuforia = null;
+    VuforiaTrackables relicTrackables = null;
+    VuforiaTrackable relicTemplate = null;
+    RelicRecoveryVuMark vuMark = null;
 
     static final double JEWEL_ARM_SERVO_MAX_POS = 1.0;
     static final double JEWEL_ARM_SERVO_MIN_POS = 0.3;
@@ -114,8 +128,8 @@ import static java.lang.Thread.sleep;
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        upperCenterLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        lowerCenterLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        upperCenterLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lowerCenterLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         relicArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         /**
@@ -156,6 +170,25 @@ import static java.lang.Thread.sleep;
         //leftBeaconColorSensor.setI2cAddress(I2cAddr.create8bit(0x3c));
         sensorColor = hwMap.get(ColorSensor.class, "colorDistanceSensor");
 
+
+        /*
+         * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
+         * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
+         */
+        VuforiaLocalizer.Parameters vuParameters = new VuforiaLocalizer.Parameters();
+        vuParameters.vuforiaLicenseKey = "AXGsSd3/////AAAAGfr/fIb4S0kzvQ/FHKNWbEEmqBZLr+0MMwryEhTuYhb0Cvi89bYECD1QnBBec+cclaRl8HOmg0RC24qs1R58Ol3LW7fx8J5Jj9pOUmxMDMowgkeFG7Swg2J1NUCXOqmNPyHw79dGgTJ8kCcagfBc/nZoVKoLR8CFP7vf3uP3rH10GLp1R4qZpS6qJEpqJragorOkEmu7CvkNt2Y5KKIY+NfD5W8BFvdQg34jheSu+WwFUNDz2N46GXFerpon+dgyIqZydvmO79rHtkFhH29ip569TRnPLNz/cEJNAdn6d3JQmUoB7p8uCYmBmmfC1WkJxKrP9NdnVc+VME5jaw62NZy5mXtkfvi+gZF7unlDoVXp";
+        vuParameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;   // Which camera that we wish to use.
+        this.vuforia = ClassFactory.createVuforiaLocalizer(vuParameters);
+
+        /**
+         * Load the data set containing the VuMarks for Relic Recovery. There's only one trackable
+         * in this data set: all three of the VuMarks in the game were created from this one template,
+         * but differ in their instance id information.
+         * @see VuMarkInstanceId
+         */
+        relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
 
     }
 

@@ -63,46 +63,42 @@ public class DriverTeleOp extends CommonFunctions {
             speedControl = 1.0;
         }
 
+        double drive;
+        double strafe;
+        double rotate;
+        double leftFrontPower;
+        double rightFrontPower;
+        double leftBackPower;
+        double rightBackPower;
+
         /*
          * Driver - Left Joy Stick - Forward / Reverse
          * Driver - Right Joy Stick - Left / Right
          */
-        left = -gamepad1.left_stick_y;
-        right = gamepad1.right_stick_x;
+        drive = -gamepad1.left_stick_y;
+        strafe = gamepad1.left_stick_x;
+        rotate = gamepad1.right_stick_x;
 
-        leftPower = left;
-        rightPower = left;
-        leftPower = leftPower + right;
-        rightPower = rightPower - right;
+        // calculate the base power of each motor based on x1 and y1
+        leftFrontPower = drive + strafe + rotate;
+        rightFrontPower = drive - strafe - rotate;
+        leftBackPower = drive - strafe + rotate;
+        rightBackPower = drive + strafe - rotate;
 
-        // Normalize the values so neither exceed +/- 1.0
-        max = Math.max(Math.abs(leftPower), Math.abs(rightPower));
-        if (max > 1.0)
-        {
-            leftPower /= max;
-            rightPower /= max;
-        }
-
-        double zoomLeft = leftPower * speedControl;
-        telemetry.addData("Left Speed: ", zoomLeft);
-
-        double zoomRight = rightPower * speedControl;
-        telemetry.addData("Right Speed: ", zoomRight);
-
-      // robot.setDrivePower((leftPower * speedControl), (rightPower * speedControl));
+        robot.setDrivePower(leftFrontPower, rightFrontPower, leftBackPower, rightBackPower);
 
         /*
          * Co-Driver - Right Joy Stick - Center Lift
          */
         if (gamepad2.right_stick_y > 0.1)
         {
-            robot.upperCenterLift.setPower(0.4);
-            robot.lowerCenterLift.setPower(0.4);
+            robot.upperCenterLift.setPower(0.1);
+            robot.lowerCenterLift.setPower(0.1);
         }
         else if (gamepad2.right_stick_y < -0.1)
         {
-            robot.upperCenterLift.setPower(-0.2);
-            robot.lowerCenterLift.setPower(-0.2);
+            robot.upperCenterLift.setPower(-0.1);
+            robot.lowerCenterLift.setPower(-0.1);
         }
         else
         {
@@ -114,25 +110,24 @@ public class DriverTeleOp extends CommonFunctions {
         /*
          * Co-Driver - A Button - Relic Arm Out
          */
-        //if (gamepad2.a)
-        //{
-          //  robot.relicArm.setPower(1.0);
-        //}
-        //else {
-            //robot.relicArm.setPower(0.0);
-        //}
-
+        if (gamepad2.a)
+        {
+            robot.relicArm.setPower(1.0);
+        }
+        else {
+            robot.relicArm.setPower(0.0);
+        }
 
         /*
          * Co-Driver - B Button - Relic Arm In
          */
-        //if (gamepad2.b)
-        //{
-            //robot.relicArm.setPower(-1.0);
-        //}
-        //else {
-            //robot.relicArm.setPower(0.0);
-        //}
+        if (gamepad2.b)
+        {
+            robot.relicArm.setPower(-1.0);
+        }
+        else {
+            robot.relicArm.setPower(0.0);
+        }
 
 
         /*

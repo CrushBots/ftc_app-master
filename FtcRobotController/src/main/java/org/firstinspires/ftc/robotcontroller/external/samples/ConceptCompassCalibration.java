@@ -94,7 +94,6 @@ public class ConceptCompassCalibration extends LinearOpMode {
         telemetry.addData("Compass", "Calibration mode. Turning the robot...");
         telemetry.update();
         robot.leftDrive.setPower(MOTOR_POWER);
-
         robot.rightDrive.setPower(-MOTOR_POWER);
 
         // run until time expires OR the driver presses STOP;
