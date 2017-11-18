@@ -10,10 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.util.Locale;
 
-import static org.firstinspires.ftc.teamcode.CrushyHardware.RIGHT_GLYPH_SERVO_CLOSED_POS;
-import static org.firstinspires.ftc.teamcode.CrushyHardware.RIGHT_GLYPH_SERVO_OPEN_POS;
-import static org.firstinspires.ftc.teamcode.CrushyHardware.LEFT_GLYPH_SERVO_CLOSED_POS;
-import static org.firstinspires.ftc.teamcode.CrushyHardware.LEFT_GLYPH_SERVO_OPEN_POS;
+import static org.firstinspires.ftc.teamcode.CrushyHardware.*;
 
 /**
  * Created by CrushBots for the 2017-2018 FTC season
@@ -36,7 +33,7 @@ public class DriverTeleOp extends CommonFunctions {
      */
     @Override
     public void loop() {
-        telemetry.addData("Status", "Running: " + runtime.toString());
+        //telemetry.addData("Status", "Running: " + runtime.toString());
 
         double left;
         double right;
@@ -51,7 +48,7 @@ public class DriverTeleOp extends CommonFunctions {
             speedControl = 1.0;
         } else {
             speedControl = 1.0;
-            telemetry.addData("speedControl", speedControl);
+            //telemetry.addData("speedControl", speedControl);
         }
 
         /*
@@ -92,13 +89,13 @@ public class DriverTeleOp extends CommonFunctions {
          */
         if (gamepad2.right_stick_y > 0.1)
         {
-            robot.upperCenterLift.setPower(0.1);
-            robot.lowerCenterLift.setPower(0.1);
+            robot.upperCenterLift.setPower(0.4);
+            robot.lowerCenterLift.setPower(0.4);
         }
         else if (gamepad2.right_stick_y < -0.1)
         {
-            robot.upperCenterLift.setPower(-0.1);
-            robot.lowerCenterLift.setPower(-0.1);
+            robot.upperCenterLift.setPower(-0.2);
+            robot.lowerCenterLift.setPower(-0.2);
         }
         else
         {
@@ -129,6 +126,38 @@ public class DriverTeleOp extends CommonFunctions {
             robot.relicArm.setPower(0.0);
         }
 
+        if (gamepad2.x)
+        {
+            robot.relicHandServo.setPosition(RELIC_HAND_SERVO_UP_POS);
+        }
+
+        if (gamepad2.y)
+        {
+            robot.relicHandServo.setPosition(RELIC_HAND_SERVO_DOWN_POS);
+        }
+
+        /*
+         * Co-Driver - B Button - Relic Arm In
+         */
+        if (gamepad2.left_bumper)
+        {
+            telemetry.addData("Status", "Left Bumper Pushed");
+
+            robot.relicWristServo.setPosition(RELIC_WRIST_SERVO_UP_POS);
+        }
+        else {
+            telemetry.addData("Status", "Left Bumper NOT Pushed");
+        }
+
+        if (gamepad2.right_bumper)
+        {
+            telemetry.addData("Status", "Right Bumper Pushed");
+
+            robot.relicWristServo.setPosition(RELIC_WRIST_SERVO_DOWN_POS);
+        }
+        else {
+            telemetry.addData("Status", "Right Bumper NOT Pushed");
+        }
 
         /*
          * Co-Driver - Left Joy Stick - Glyph Open/Close
@@ -149,7 +178,7 @@ public class DriverTeleOp extends CommonFunctions {
 
         angles = robot.gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
 
-        telemetry.addData("Heading:", formatAngle(angles.angleUnit, angles.firstAngle));
+       // telemetry.addData("Heading:", formatAngle(angles.angleUnit, angles.firstAngle));
 
         if(gamepad1.y){
             double heading = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
@@ -190,5 +219,4 @@ public class DriverTeleOp extends CommonFunctions {
     String formatDegrees(double degrees){
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
-
 }

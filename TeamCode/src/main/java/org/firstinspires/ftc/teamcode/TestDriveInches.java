@@ -31,8 +31,19 @@ public class TestDriveInches extends Auto_CommonFunctions {
         while (!(isStarted() || isStopRequested())) {
         }
 
-        DriveInches(5);
+        forwardDriveInches(5);
+        telemetry.addData("Status", "Drive Forward Complete");    //
+        telemetry.update();
+
+        forwardDriveInches(5);
+
+
+        backwardDriveInches(5);
 
         turnLeft(90);
+
+        sleep(2000);
+
+        turnRight(90);
     }
 }

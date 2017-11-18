@@ -31,72 +31,45 @@ public class Auto_RedRight extends Auto_CommonFunctions {
         while (!(isStarted() || isStopRequested())) {
         }
 
-        robot.rightGlyphServo.setPosition(robot.RIGHT_GLYPH_SERVO_CLOSED_POS);
-        robot.leftGlyphServo.setPosition(robot.LEFT_GLYPH_SERVO_CLOSED_POS);
-        sleep(400);
+        // Step 1: Grabbing the preloaded Glyph
+        closeGlyphGrabber();
 
-        // Step 1: Raise Glyph off ground
+        // Step 2: Raise Glyph off ground
         raiseGlyph();
 
-        // Step 2: Put down jewel arm
+        // Step 3: Put down jewel arm
         lowerJewelArm();
 
-        // Step 3: Read color of jewel and knock blue one off
+        // Step 4: Read color of jewel and knock blue one off
         if (isRed(robot.sensorColor)){
-            DriveInches(-5);
-            sleep(250);
-            //DriveInches(5);
+            backwardDriveInches(-3);
+            sleep(500);
+            //forwardDriveInches(3);
         }
         else {
             if (isBlue(robot.sensorColor)) {
-                DriveInches(5);
-                sleep(250);
-                //DriveInches(-5);
+                forwardDriveInches(3);
+                sleep(500);
+                //backwardDriveInches(-3);
             }
         }
 
-        sleep (250);
-        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
-
-        // Step 4: Bring jewel arm back up
+        // Step 5: Bring jewel arm back up
         raiseJewelArm();
 
-        // Step 5: Drive into safe zone
-        robot.setDrivePower(0.4, 0.4, 0.4, 0.4);
-        sleep(2000);
-        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
+        // Step 6:
+        forwardDriveInches(24);
 
-        // Step 6: Turn towards crypto box
-        robot.setDrivePower(-0.5, 0.5, -0.5, 0.5);
-        sleep(500);
-        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
+        // Step 7: Turn towards crypto box
+        //turnLeft(45);
 
-        // Step 7: Drive forward
-        robot.setDrivePower(0.4, 0.4, 0.4, 0.4);
-        sleep(1000);
-        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
+        // Step 8: Drive forward
+        //forwardDriveInches(22);
 
-        // Step 8: place glyph in crypto box
-        lowerGlyph();
-        robot.leftGlyphServo.setPosition(robot.LEFT_GLYPH_SERVO_OPEN_POS);
-        robot.rightGlyphServo.setPosition(robot.RIGHT_GLYPH_SERVO_OPEN_POS);
+        // Step 9: place glyph in crypto box
+        //openGlyphGrabber();
 
-        // Step 9: Go Forward
-        robot.setDrivePower(0.4, 0.4, 0.4, 0.4);
-        sleep(400);
-        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
-
-        // Step 9: Back up
-        robot.setDrivePower(-0.4, -0.4, -0.4, -0.4);
-        sleep(1000);
-        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
-
-        robot.setDrivePower(0.4, 0.4, 0.4, 0.4);
-        sleep(800);
-        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
-
-        robot.setDrivePower(-0.4, -0.4, -0.4, -0.4);
-        sleep(500);
-        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
+        // Step 10: Back up
+        //backwardDriveInches(6);
     }
 }
