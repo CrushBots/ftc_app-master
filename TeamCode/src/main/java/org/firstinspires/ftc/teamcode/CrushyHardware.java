@@ -30,17 +30,17 @@ import static java.lang.Thread.sleep;
     public DcMotor upperCenterLift = null;
     public DcMotor lowerCenterLift = null;
     public DcMotor relicArm = null;
+
     public Servo rightGlyphServo = null;
     public Servo leftGlyphServo = null;
     public Servo relicWristServo = null;
-    public Servo relicFingersServo = null;
+    public Servo relicHandServo = null;
     public Servo jewelArmServo = null;
+
     public ColorSensor sensorColor;
+
     public BNO055IMU gyro = null;
-    /**
-     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
-     * localization engine.
-     */
+
     VuforiaLocalizer vuforia = null;
     VuforiaTrackables relicTrackables = null;
     VuforiaTrackable relicTemplate = null;
@@ -49,17 +49,19 @@ import static java.lang.Thread.sleep;
     static final double JEWEL_ARM_SERVO_MAX_POS = 1.0;
     static final double JEWEL_ARM_SERVO_MIN_POS = 0.3;
 
-    static final double RIGHT_GLYPH_SERVO_OPEN_POS = 0.2;
-    static final double RIGHT_GLYPH_SERVO_CLOSED_POS = 0.5;
+    static final double RIGHT_GLYPH_SERVO_WIDE_OPEN_POS = 1.0;
+    static final double RIGHT_GLYPH_SERVO_OPEN_POS = 1.0;
+    static final double RIGHT_GLYPH_SERVO_CLOSED_POS = 0.3;
 
-    static final double LEFT_GLYPH_SERVO_OPEN_POS = 0.5;
-    static final double LEFT_GLYPH_SERVO_CLOSED_POS = 0.3;
+    static final double LEFT_GLYPH_SERVO_WIDE_OPEN_POS = 0.0;
+    static final double LEFT_GLYPH_SERVO_OPEN_POS = 0.4;
+    static final double LEFT_GLYPH_SERVO_CLOSED_POS = 0.7;
 
     static final double RELIC_WRIST_SERVO_UP_POS = 1.0;
-    static final double RELIC_WRIST_SERVO_DOWN_POS = 0.0;
+    static final double RELIC_WRIST_SERVO_DOWN_POS = 0.1;
 
-    static final double RELIC_FINGERS_SERVO_UP_POS = 1.0;
-    static final double RELIC_FINGERS_SERVO_DOWN_POS = 0.0;
+    static final double RELIC_HAND_SERVO_UP_POS = 1.0;
+    static final double RELIC_HAND_SERVO_DOWN_POS = 0.0;
 
 
     /* Local members. */
@@ -105,22 +107,13 @@ import static java.lang.Thread.sleep;
         lowerCenterLift.setPower(0);
         relicArm.setPower(0);
 
-        // Set all motors to run with or without encoders.
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        upperCenterLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lowerCenterLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        relicArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        // Set all motors to run with or without encoders.
+        // Set all motors to RUN_USING_ENCODER or RUN_WITHOUT_ENCODER.
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        upperCenterLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lowerCenterLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        upperCenterLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lowerCenterLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         relicArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Set all Zero Power Behavior - FLOAT or BREAK
@@ -137,14 +130,18 @@ import static java.lang.Thread.sleep;
          */
         jewelArmServo = hwMap.servo.get("jewelArm");
         jewelArmServo.setPosition(JEWEL_ARM_SERVO_MAX_POS);
+
         rightGlyphServo = hwMap.servo.get("rightGlyph");
         //rightGlyphServo.setPosition(RIGHT_GLYPH_SERVO_CLOSED_POS);
+
         leftGlyphServo = hwMap.servo.get("leftGlyph");
         //leftGlyphServo.setPosition(LEFT_GLYPH_SERVO_CLOSED_POS);
-        //relicWristServo = hwMap.servo.get("relicWrist");
+
+        relicWristServo = hwMap.servo.get("relicWrist");
         //relicWristServo.setPosition(RELIC_WRIST_SERVO_DOWN_POS);
-        //relicFingersServo = hwMap.servo.get("relicFingers");
-        //relicFingersServo.setPosition(RELIC_FINGERS_SERVO_DOWN_POS);
+
+        relicHandServo = hwMap.servo.get("relicHand");
+        //relicHandServo.setPosition(RELIC_HAND_SERVO_DOWN_POS);
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
@@ -166,10 +163,7 @@ import static java.lang.Thread.sleep;
         /**
          *  Define and setup Color sensors
          */
-        //leftBeaconColorSensor = hwMap.colorSensor.get("leftBeacon");
-        //leftBeaconColorSensor.setI2cAddress(I2cAddr.create8bit(0x3c));
         sensorColor = hwMap.get(ColorSensor.class, "colorDistanceSensor");
-
 
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);

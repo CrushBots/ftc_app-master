@@ -37,59 +37,58 @@ public class Auto_CommonFunctions extends LinearOpMode {
     public void runOpMode() {
     }
 
-    public void DriveInches (int inches) {
+    public void forwardDriveInches(int inches) {
         int targetTicks = 0;
 
-        // Diameter of wheel is 4 inches
-        // Circumference of wheel is 12.566 inches
         // Ticks per revolution is 1220
-
-        //double WheelDiameter = 2.88;
-        //double WheelCircumfrence = WheelDiameter * Math.PI;
-        //distance = distance / WheelCircumfrence;
-        //double targetDistance = distance * 1120;
-
         targetTicks = 120 * inches;
 
         robot.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //robot.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //robot.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //robot.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         // Wait for encoders reset
-        //while(robot.rightBack.getCurrentPosition() != 0 && robot.rightFront.getCurrentPosition() != 0){}
         while (robot.leftFront.getCurrentPosition() != 0){}
-
-        //robot.leftFront.setTargetPosition((int) targetTicks);
-        //robot.leftBack.setTargetPosition((int) targetTicks);
-        //robot.rightFront.setTargetPosition((int) targetTicks);
-        //robot.rightBack.setTargetPosition((int) targetTicks);
-
-        //robot.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //robot.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //robot.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //robot.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //int currentPosition = robot.leftFront.getCurrentPosition();
-        //telemetry.addData("CurrentPostion: ", currentPosition);
-        //telemetry.update();
 
         robotDrive(0.4);
 
-        //double start = runtime.milliseconds();
-
-        //while(robot.leftFront.isBusy() || robot.leftBack.isBusy()|| robot.rightFront.isBusy() || robot.rightBack.isBusy()){
-        //    if (runtime.milliseconds() > start + 500) {
-        //        break;
-        //    }
-        //}
-
         while (robot.leftFront.getCurrentPosition() < targetTicks) {}
 
-        robotStop();
+        robot.setDrivePower(0.0,0.0,0.0,0.0);
+        sleep(500);
+
+    }
+
+    public void backwardDriveInches(int inches) {
+        int targetTicks = 0;
+
+        // Ticks per revolution is 1220
+        targetTicks = -120 * inches;
+
+        robot.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // Wait for encoders reset
+        while (robot.leftFront.getCurrentPosition() != 0){
+            telemetry.addData("Status", "Stuck in Get Current Position");
+            telemetry.update();
+
+        }
+
+        robotDrive(-0.4);
+
+        while (robot.leftFront.getCurrentPosition() > targetTicks) {
+            telemetry.addData("Status", "Stuck in greater than target ticks");
+            telemetry.update();
+        }
+
+        robot.setDrivePower(0.0,0.0,0.0,0.0);
+        sleep(500);
     }
 
     public void robotStop() {
+
         robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
+        sleep(500);
     }
 
     public void robotDrive(double power) {
@@ -117,15 +116,27 @@ public class Auto_CommonFunctions extends LinearOpMode {
     public void raiseJewelArm() {
 
         robot.jewelArmServo.setPosition(JEWEL_ARM_SERVO_MAX_POS);
-        sleep(1500);
+        sleep(1000);
     }
 
     public void lowerJewelArm() {
 
         robot.jewelArmServo.setPosition(JEWEL_ARM_SERVO_MIN_POS);
-        sleep(1500);
-
+        sleep(1000);
     }
+
+    public void closeGlyphGrabber() {
+        robot.rightGlyphServo.setPosition(robot.RIGHT_GLYPH_SERVO_CLOSED_POS);
+        robot.leftGlyphServo.setPosition(robot.LEFT_GLYPH_SERVO_CLOSED_POS);
+        sleep(400);
+    }
+
+    public void openGlyphGrabber() {
+        robot.rightGlyphServo.setPosition(robot.RIGHT_GLYPH_SERVO_OPEN_POS);
+        robot.leftGlyphServo.setPosition(robot.LEFT_GLYPH_SERVO_OPEN_POS);
+        sleep(400);
+    }
+
 
     public void raiseGlyph() {
         robot.upperCenterLift.setPower(-0.4);
@@ -142,25 +153,6 @@ public class Auto_CommonFunctions extends LinearOpMode {
         robot.upperCenterLift.setPower(0.0);
         robot.lowerCenterLift.setPower(0.0);
     }
-
-
-    public void ReadJewelColor() {
-
-        sleep(500);
-
-        //while (!isBlue(robot.rightBeaconColorSensor)) {
-            //robot.setDrivePower(0.3, 0.3);
-        //}
-        //sleep(500);
-        //robot.setDrivePower(0, 0);
-
-        // Move arms out
-        //robot.BeaconArmsServo.setPosition(JEWEL_ARM_SERVO_MIN_POS);
-        //sleep(2000);
-        //robot.BeaconArmsServo.setPosition(JEWEL_ARM_SERVO_MAX_POS);
-        //sleep(2000);
-    }
-
 
     public Boolean isRed(ColorSensor localColorSensor) {
 
@@ -211,19 +203,29 @@ public class Auto_CommonFunctions extends LinearOpMode {
 
         angles = robot.gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
 
-        telemetry.addData("Heading:", formatAngle(angles.angleUnit, angles.firstAngle));
-
         double heading = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
         heading = convertHeading(heading);
 
-        double targetHeading = heading - degrees;
+        telemetry.addData("Heading:", heading);
 
-        while(heading > targetHeading) {
-            robot.setDrivePower(0.4, -0.4, 0.4, -0.4);
+        double targetHeading = heading - degrees;
+        targetHeading = convertHeading(targetHeading);
+
+        telemetry.addData("Target:", targetHeading);
+        telemetry.update();
+
+        sleep (500);
+
+        while(Math.abs(heading - targetHeading) > 1) {
+            robotRotate(0.4,"right");
 
             angles = robot.gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
             heading = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
             heading = convertHeading(heading);
+
+            telemetry.addData("Heading:", heading);
+            telemetry.addData("Target:", targetHeading);
+            telemetry.update();
         }
 
         robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
@@ -235,19 +237,29 @@ public class Auto_CommonFunctions extends LinearOpMode {
 
         angles = robot.gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
 
-        telemetry.addData("Heading:", formatAngle(angles.angleUnit, angles.firstAngle));
-
         double heading = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
         heading = convertHeading(heading);
 
-        double targetHeading = heading + degrees;
+        telemetry.addData("Heading:", heading);
 
-        while(heading < targetHeading) {
-            robot.setDrivePower(-0.4, 0.4, -0.4, 0.4);
+        double targetHeading = heading + degrees;
+        targetHeading = convertHeading(targetHeading);
+
+        telemetry.addData("Target:", targetHeading);
+        telemetry.update();
+
+        sleep (500);
+
+        while(Math.abs(heading - targetHeading) > 1) {
+            robotRotate(0.4,"left");
 
             angles = robot.gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
             heading = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
             heading = convertHeading(heading);
+
+            telemetry.addData("Heading:", heading);
+            telemetry.addData("Target:", targetHeading);
+            telemetry.update();
         }
 
         robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
@@ -256,6 +268,10 @@ public class Auto_CommonFunctions extends LinearOpMode {
     double convertHeading (double heading){
         if (heading < 0){
             return 360 + heading;
+        }
+
+        if (heading > 360) {
+            return heading - 360;
         }
 
         return heading;
@@ -271,12 +287,12 @@ public class Auto_CommonFunctions extends LinearOpMode {
 
     public void activateVuMark() {
         robot.relicTrackables.activate();
-        sleep(1000);
+        //sleep(1000);
     }
 
     public void deactivateVuMark() {
         robot.relicTrackables.deactivate();
-        sleep(500);
+        //sleep(500);
     }
 
     public void readVuMark() {
