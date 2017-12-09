@@ -2,11 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Color;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -18,14 +19,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 
 import java.util.Locale;
 
-import static org.firstinspires.ftc.teamcode.CrushyHardware.JEWEL_ARM_SERVO_MAX_POS;
-import static org.firstinspires.ftc.teamcode.CrushyHardware.JEWEL_ARM_SERVO_MIN_POS;
+import static org.firstinspires.ftc.teamcode.CrushyHardware.JEWEL_ARM_SERVO_LEFT_POS;
+import static org.firstinspires.ftc.teamcode.CrushyHardware.JEWEL_ARM_SERVO_MIDDLE_POS;
+import static org.firstinspires.ftc.teamcode.CrushyHardware.JEWEL_ARM_SERVO_RIGHT_POS;
+import static org.firstinspires.ftc.teamcode.CrushyHardware.JEWEL_ARM_SERVO_UP_POS;
+import static org.firstinspires.ftc.teamcode.CrushyHardware.JEWEL_ARM_SERVO_DOWN_POS;
 
 /**
  * Created by CrushBots for the 2017-2018 FTC season
  */
 
-@TeleOp(name="CommonFunctions", group="Stuff")
+@Autonomous(name="Common Functions", group="Autonomous")
 @Disabled
 public class Auto_CommonFunctions extends LinearOpMode {
 
@@ -33,8 +37,55 @@ public class Auto_CommonFunctions extends LinearOpMode {
     protected ElapsedTime runtime = new ElapsedTime();
     CrushyHardware robot = new CrushyHardware();
 
+    static final Integer ALLIANCE_BLUE = 1;
+    static final Integer ALLIANCE_RED = 2;
+
     @Override
     public void runOpMode() {
+    }
+
+    public void knockJewel(int alliance) {
+
+        moveServo(robot.jewelArmLeftRightServo,JEWEL_ARM_SERVO_MIDDLE_POS);
+        moveServo(robot.jewelArmUpDownServo,JEWEL_ARM_SERVO_DOWN_POS);
+        telemetry.addData("Servo is ", "DOWN");
+        telemetry.update();
+        //sleep(5000);
+
+        if (((alliance == ALLIANCE_BLUE) && (isBlue(robot.jewelFarSensor))) ||
+                ((alliance == ALLIANCE_RED) && (isRed(robot.jewelFarSensor))) ||
+                ((alliance == ALLIANCE_BLUE) && (isRed(robot.jewelNearSensor))) ||
+                ((alliance == ALLIANCE_RED) && (isBlue(robot.jewelNearSensor)))) {
+
+            //Swipe left
+            moveServo(robot.jewelArmLeftRightServo,JEWEL_ARM_SERVO_LEFT_POS);
+            telemetry.addData("Servo is ", "LEFT");
+            telemetry.update();
+            //sleep(5000);
+
+        }
+        else if (((alliance == ALLIANCE_BLUE) && (isRed(robot.jewelFarSensor))) ||
+                ((alliance == ALLIANCE_RED) && (isBlue(robot.jewelFarSensor))) ||
+                ((alliance == ALLIANCE_BLUE) && (isBlue(robot.jewelFarSensor))) ||
+                ((alliance == ALLIANCE_RED) && (isRed(robot.jewelFarSensor)))
+                ) {
+            //Swipe right
+            moveServo(robot.jewelArmLeftRightServo,JEWEL_ARM_SERVO_RIGHT_POS);
+            telemetry.addData("Servo is ", "RIGHT");
+            telemetry.update();
+            //sleep(5000);
+
+        }
+
+        moveServo(robot.jewelArmLeftRightServo,JEWEL_ARM_SERVO_MIDDLE_POS);
+        telemetry.addData("Servo is ", "MIDDLE");
+        telemetry.update();
+        //sleep(5000);
+
+        moveServo(robot.jewelArmUpDownServo,JEWEL_ARM_SERVO_UP_POS);
+        telemetry.addData("Servo is ", "UP");
+        telemetry.update();
+        //sleep(5000);
     }
 
     public void forwardDriveInches(int inches) {
@@ -47,11 +98,11 @@ public class Auto_CommonFunctions extends LinearOpMode {
         robot.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Wait for encoders reset
-        while (robot.leftFront.getCurrentPosition() != 0){}
+        while (opModeIsActive() && (robot.leftFront.getCurrentPosition() != 0)){}
 
-        robotDrive(0.4);
+        startRobot(0.4);
 
-        while (robot.leftFront.getCurrentPosition() < targetTicks) {}
+        while (opModeIsActive() && (robot.leftFront.getCurrentPosition() < targetTicks)) {}
 
         robot.setDrivePower(0.0,0.0,0.0,0.0);
         sleep(500);
@@ -68,15 +119,14 @@ public class Auto_CommonFunctions extends LinearOpMode {
         robot.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Wait for encoders reset
-        while (robot.leftFront.getCurrentPosition() != 0){
+        while (opModeIsActive() && (robot.leftFront.getCurrentPosition() != 0)){
             telemetry.addData("Status", "Stuck in Get Current Position");
             telemetry.update();
-
         }
 
-        robotDrive(-0.4);
+        startRobot(-0.4);
 
-        while (robot.leftFront.getCurrentPosition() > targetTicks) {
+        while (opModeIsActive() && (robot.leftFront.getCurrentPosition() > targetTicks)) {
             telemetry.addData("Status", "Stuck in greater than target ticks");
             telemetry.update();
         }
@@ -85,17 +135,16 @@ public class Auto_CommonFunctions extends LinearOpMode {
         sleep(500);
     }
 
-    public void robotStop() {
-
+    public void stopRobot() {
         robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
         sleep(500);
     }
 
-    public void robotDrive(double power) {
+    public void startRobot(double power) {
         robot.setDrivePower(power, power, power, power);
     }
 
-    public void robotStrafe(double power, String direction) {
+    public void strafeRobot(double power, String direction) {
         if (direction == "left") {
             robot.setDrivePower(-power, power, power, -power);
         }
@@ -104,7 +153,7 @@ public class Auto_CommonFunctions extends LinearOpMode {
         }
     }
 
-    public void robotRotate(double power, String direction) {
+    public void rotateRobot(double power, String direction) {
         if (direction == "left") {
             robot.setDrivePower(-power, power, -power, power);
         }
@@ -113,49 +162,7 @@ public class Auto_CommonFunctions extends LinearOpMode {
         }
     }
 
-    public void raiseJewelArm() {
-
-        robot.jewelArmServo.setPosition(JEWEL_ARM_SERVO_MAX_POS);
-        sleep(1000);
-    }
-
-    public void lowerJewelArm() {
-
-        robot.jewelArmServo.setPosition(JEWEL_ARM_SERVO_MIN_POS);
-        sleep(1000);
-    }
-
-    public void closeGlyphGrabber() {
-        robot.rightGlyphServo.setPosition(robot.RIGHT_GLYPH_SERVO_CLOSED_POS);
-        robot.leftGlyphServo.setPosition(robot.LEFT_GLYPH_SERVO_CLOSED_POS);
-        sleep(400);
-    }
-
-    public void openGlyphGrabber() {
-        robot.rightGlyphServo.setPosition(robot.RIGHT_GLYPH_SERVO_OPEN_POS);
-        robot.leftGlyphServo.setPosition(robot.LEFT_GLYPH_SERVO_OPEN_POS);
-        sleep(400);
-    }
-
-
-    public void raiseGlyph() {
-        robot.upperCenterLift.setPower(-0.4);
-        robot.lowerCenterLift.setPower(-0.4);
-        sleep(500);
-        robot.upperCenterLift.setPower(0.0);
-        robot.lowerCenterLift.setPower(0.0);
-    }
-
-    public void lowerGlyph() {
-        robot.upperCenterLift.setPower(0.4);
-        robot.lowerCenterLift.setPower(0.4);
-        sleep(500);
-        robot.upperCenterLift.setPower(0.0);
-        robot.lowerCenterLift.setPower(0.0);
-    }
-
     public Boolean isRed(ColorSensor localColorSensor) {
-
         float hsv[] = {0F,0F,0F};
 
         Color.RGBToHSV(localColorSensor.red() * 8, localColorSensor.green() * 8, localColorSensor.blue() * 8, hsv);
@@ -168,7 +175,6 @@ public class Auto_CommonFunctions extends LinearOpMode {
     }
 
     public Boolean isWhiteLine(ColorSensor localColorSensor) {
-
         float hsv[] = {0F,0F,0F};
 
         localColorSensor.enableLed(true);
@@ -178,17 +184,14 @@ public class Auto_CommonFunctions extends LinearOpMode {
         } else {
             return false;
         }
-
     }
 
     public boolean isBlue(ColorSensor localColorSensor) {
-
         float hsv[] = {0F,0F,0F};
 
         localColorSensor.enableLed(false);
 
         Color.RGBToHSV(localColorSensor.red() * 8, localColorSensor.green() * 8, localColorSensor.blue() * 8, hsv);
-
 
         if ((hsv[0] > 170 && hsv[0] < 260) && hsv[1] > .2) {
             return true;
@@ -198,7 +201,6 @@ public class Auto_CommonFunctions extends LinearOpMode {
     }
 
     public void turnRight(int degrees){
-
         Orientation angles;
 
         angles = robot.gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
@@ -216,8 +218,8 @@ public class Auto_CommonFunctions extends LinearOpMode {
 
         sleep (500);
 
-        while(Math.abs(heading - targetHeading) > 1) {
-            robotRotate(0.4,"right");
+        while(opModeIsActive() && (Math.abs(heading - targetHeading) > 1)) {
+            rotateRobot(0.4,"right");
 
             angles = robot.gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
             heading = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
@@ -232,7 +234,6 @@ public class Auto_CommonFunctions extends LinearOpMode {
     }
 
     public void turnLeft(int degrees){
-
         Orientation angles;
 
         angles = robot.gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
@@ -250,8 +251,8 @@ public class Auto_CommonFunctions extends LinearOpMode {
 
         sleep (500);
 
-        while(Math.abs(heading - targetHeading) > 1) {
-            robotRotate(0.4,"left");
+        while(opModeIsActive() && (Math.abs(heading - targetHeading) > 1)) {
+            rotateRobot(0.4,"left");
 
             angles = robot.gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
             heading = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
@@ -263,6 +264,38 @@ public class Auto_CommonFunctions extends LinearOpMode {
         }
 
         robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
+    }
+
+    public void moveServo(Servo localServo, double targetPosition){
+
+        double currentPosition = localServo.getPosition();
+
+        //telemetry.addData("servoPosition", currentPosition);
+        //telemetry.update();
+        //sleep(1000);
+
+        while (opModeIsActive() && (currentPosition != targetPosition)) {
+
+            if (currentPosition < targetPosition) {
+                currentPosition += 0.01;
+
+                if (currentPosition > targetPosition)
+                {
+                    currentPosition = targetPosition;
+                }
+            } else {
+                currentPosition -= 0.01;
+
+                if (currentPosition < targetPosition)
+                {
+                    currentPosition = targetPosition;
+                }
+            }
+
+            localServo.setPosition(currentPosition);
+            sleep(30);
+        }
+
     }
 
     double convertHeading (double heading){
@@ -286,31 +319,35 @@ public class Auto_CommonFunctions extends LinearOpMode {
     }
 
     public void activateVuMark() {
-        robot.relicTrackables.activate();
-        //sleep(1000);
+        //robot.relicTrackables.activate();
+        sleep(500);
     }
 
     public void deactivateVuMark() {
-        robot.relicTrackables.deactivate();
-        //sleep(500);
+        //robot.relicTrackables.deactivate();
+        sleep(500);
     }
 
-    public void readVuMark() {
+    //RelicRecoveryVuMark readVuMark() {
+
         /**
          * See if any of the instances of {@link relicTemplate} are currently visible.
          * {@link RelicRecoveryVuMark} is an enum which can have the following values:
          * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
          * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
          */
-        robot.vuMark = RelicRecoveryVuMark.from(robot.relicTemplate);
-        if (robot.vuMark != RelicRecoveryVuMark.UNKNOWN) {
+        //RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(robot.relicTemplate);
 
-                /* Found an instance of the template. In the actual game, you will probably
-                 * loop until this condition occurs, then move on to act accordingly depending
-                 * on which VuMark was visible. */
-            telemetry.addData("VuMark", "%s visible", robot.vuMark);
-        } else {
-            telemetry.addData("VuMark", "not visible");
-        }
+        //return vuMark;
+        //return vuMark;
+
+    //}
+
+    public void readPictograph() {
+        //activateVuMark();
+
+        //robot.vuMark = readVuMark();
+
+        //deactivateVuMark();
     }
 }

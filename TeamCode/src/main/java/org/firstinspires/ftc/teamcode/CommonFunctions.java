@@ -1,13 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.graphics.Color;
-
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 /**
  * Created by CrushBots for the 2017-2018 FTC season
@@ -20,7 +16,6 @@ public class CommonFunctions extends OpMode {
     /* Declare OpMode members. */
     protected ElapsedTime runtime = new ElapsedTime();
     CrushyHardware robot = new CrushyHardware();
-    double shooterPower = 0.0;
 
     /*
      * Code to run ONCE when the driver hits INIT

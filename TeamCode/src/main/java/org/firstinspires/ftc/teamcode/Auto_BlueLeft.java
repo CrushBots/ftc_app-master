@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * Created by CrushBots for the 2017-2018 FTC season hello
+ * Created by CrushBots for the 2017-2018 FTC season
  */
 
 @Autonomous(name="Blue Left", group="Autonomous")
@@ -31,56 +31,30 @@ public class Auto_BlueLeft extends Auto_CommonFunctions {
         while (!(isStarted() || isStopRequested())) {
         }
 
-        // Step 1: Grabbing the preloaded Glyph
-        closeGlyphGrabber();
+        // Step 1: Knock off the Red Jewel
+        knockJewel(ALLIANCE_BLUE);
 
-        // Step 2: Raise Glyph off ground
-        raiseGlyph();
+        // Step 2: Read the Pictograph
+        readPictograph();
 
-        // Step 3: Put down jewel arm
-        lowerJewelArm();
-
-        // Step 4: Read color of jewel and knock red one off
-        if (isBlue(robot.sensorColor)){
-            robot.setDrivePower(-0.6,-0.6,-0.6,-0.6);
-            sleep(150);
-            robot.setDrivePower(0.0,0.0,0.0,0.0);
-            sleep(500);
-            //forwardDriveInches(3);
+        // Step 3: Move into front of the Cryptobox
+        backwardDriveInches(12);
+        strafeRobot(0.5, "Left");
+        switch (robot.vuMark) {
+            case LEFT:
+                strafeRobot(0.5, "Left");
+                break;
+            case RIGHT:
+                strafeRobot(0.5, "Left");
+                break;
+            default:
+                strafeRobot(0.5, "Left");
+                break;
         }
-        else {
-            if (isRed(robot.sensorColor)) {
-                robot.setDrivePower(0.6,0.6,0.6,0.6);
-                sleep(150);
-                robot.setDrivePower(0.0,0.0,0.0,0.0);
-                sleep(500);
-                //backwardDriveInches(3);
-            }
-        }
+        turnLeft(180);
+        forwardDriveInches(10);
 
-        // Step 5: Bring jewel arm back up
-        raiseJewelArm();
-
-        //robotRotate(0.8,"right");
-        //sleep(1500);
-        //robot.setDrivePower(0.0,0.0,0.0,0.0);
-
-        // Step 6: Drive into safe zone
-        backwardDriveInches(37);
-
-        // Step 7: Turn towards crypto box
-        //robotRotate(0.8,"left");
-        //sleep(500);
-        //robot.setDrivePower(0.0,0.0,0.0,0.0);
-
-
-        // Step 8: Drive forward
-        //forwardDriveInches(24);
-
-        // Step 9: place glyph in crypto box
-        //openGlyphGrabber();
-
-        // Step 10: Back up
-        //backwardDriveInches(6);
+        // Step 4: Release Glyphs
+        backwardDriveInches(5);
     }
 }

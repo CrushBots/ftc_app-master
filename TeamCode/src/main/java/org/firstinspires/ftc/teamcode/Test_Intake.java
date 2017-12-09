@@ -4,12 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * Created by CrushBots for the 2017-2018 FTC season hello
+ * Created by CrushBots for the 2017-2018 FTC season
  */
 
-@Autonomous(name="Test Drive Inches", group="Autonomous")
+@Autonomous(name="Test Intake", group="Test")
 //@Disabled
-public class TestDriveInches extends Auto_CommonFunctions {
+public class Test_Intake extends Auto_CommonFunctions {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -31,19 +31,17 @@ public class TestDriveInches extends Auto_CommonFunctions {
         while (!(isStarted() || isStopRequested())) {
         }
 
-        forwardDriveInches(5);
-        telemetry.addData("Status", "Drive Forward Complete");    //
+        // Test 1: Turn on Intake
+        telemetry.addData("Testing ", "Intake motors");
+        telemetry.update();
+        sleep(2500);
+
+        robot.turnOnIntake();
+        telemetry.addData("", "Running Intake");
         telemetry.update();
 
-        forwardDriveInches(5);
+        while (opModeIsActive()) {
 
-
-        backwardDriveInches(5);
-
-        turnLeft(90);
-
-        sleep(2000);
-
-        turnRight(90);
+        }
     }
 }

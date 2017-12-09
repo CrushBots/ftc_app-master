@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.ConceptVuforiaNavigation;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -48,58 +47,36 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-/**
- * This OpMode illustrates the basics of using the Vuforia engine to determine
- * the identity of Vuforia VuMarks encountered on the field. The code is structured as
- * a LinearOpMode. It shares much structure with {@link ConceptVuforiaNavigation}; we do not here
- * duplicate the core Vuforia documentation found there, but rather instead focus on the
- * differences between the use of Vuforia for navigation vs VuMark identification.
- *
- * @see ConceptVuforiaNavigation
- * @see VuforiaLocalizer
- * @see VuforiaTrackableDefaultListener
- * see  ftc_app/doc/tutorial/FTC_FieldCoordinateSystemDefinition.pdf
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
- *
- * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
- * is explained in {@link ConceptVuforiaNavigation}.
- */
-
 @Autonomous(name="Test VuMark", group ="Test")
 //@Disabled
-public class TestVuMarkIdentification extends Auto_CommonFunctions {
+public class Test_VuMarkIdentification extends Auto_CommonFunctions {
 
-    /* Declare OpMode members. */
-    private ElapsedTime runtime = new ElapsedTime();
+    CrushyHardware robot = new CrushyHardware();
 
-    @Override
-    public void runOpMode() {
+    @Override public void runOpMode() {
 
         /* Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
 
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Ready to run");    //
+        telemetry.addData(">", "Press Play to start");
         telemetry.update();
+        waitForStart();
 
-        // Wait for the game to start (driver presses PLAY)
-        // Abort this loop is started or stopped.
-        while (!(isStarted() || isStopRequested())) {
-        }
+        //activateVuMark();
 
-        activateVuMark();
+        while (opModeIsActive()) {
 
-        while (true){
-            readVuMark();
-            sleep(1000);
-
+            /**
+             * See if any of the instances of relicTemplate are currently visible.
+             * RelicRecoveryVuMark is an enum which can have the following values:
+             * UNKNOWN, LEFT, CENTER, and RIGHT.
+             */
+            //telemetry.addData("VuMark", "%s visible", readVuMark());
+            telemetry.update();
         }
 
         //deactivateVuMark();
-
     }
 }

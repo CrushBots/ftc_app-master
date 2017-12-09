@@ -31,48 +31,31 @@ public class Auto_RedLeft extends Auto_CommonFunctions {
         while (!(isStarted() || isStopRequested())) {
         }
 
-        // Step 1: Grabbing the preloaded Glyph
-        closeGlyphGrabber();
 
-        // Step 2: Raise Glyph off ground
-        raiseGlyph();
+        // Step 1: Knock off the Red Jewel
+        knockJewel(ALLIANCE_RED);
 
-        // Step 3: Put down jewel arm
-        lowerJewelArm();
+        // Step 2: Read the Pictograph
+        readPictograph();
 
-        // Step 4: Read color of jewel and knock blue one off
-        if (isRed(robot.sensorColor)){
-            backwardDriveInches(-3);
-            sleep(500);
-            //forwardDriveInches(3);
+        // Step 3: Move into front of the Cryptobox
+        turnLeft(45);
+        switch (robot.vuMark) {
+            case LEFT:
+                forwardDriveInches(20);
+                break;
+            case RIGHT:
+                forwardDriveInches(30);
+                break;
+            default:
+                forwardDriveInches(40);
+                break;
         }
-        else {
-            if (isBlue(robot.sensorColor)) {
-                forwardDriveInches(3);
-                sleep(500);
-                //backwardDriveInches(-3);
-            }
-        }
+        turnRight(45);
 
-        // Step 5: Bring jewel arm back up
-        raiseJewelArm();
+        // Step 4: Release Glyphs
+        forwardDriveInches(5);
+        backwardDriveInches(5);
 
-        // Step 6: Drive into safe zone
-        forwardDriveInches(36);
-
-        // Step 7: Turn towards crypto box
-        //robotRotate(0.8,"right");
-        //sleep(1100);
-        //robot.setDrivePower(0.0,0.0,0.0,0.0);
-
-
-        // Step 8: Go Forward
-        //forwardDriveInches(20);
-
-        // Step 6: place glyph in crypto box
-        //openGlyphGrabber();
-
-        // Step 10: Back up
-        //backwardDriveInches(5);
     }
 }
