@@ -31,45 +31,22 @@ public class Auto_RedRight extends Auto_CommonFunctions {
         while (!(isStarted() || isStopRequested())) {
         }
 
-        // Step 1: Grabbing the preloaded Glyph
-        closeGlyphGrabber();
+        // Step 1: Knock off the blue Jewel
+        knockJewel(ALLIANCE_RED);
 
-        // Step 2: Raise Glyph off ground
-        raiseGlyph();
-
-        // Step 3: Put down jewel arm
-        lowerJewelArm();
-
-        // Step 4: Read color of jewel and knock blue one off
-        if (isRed(robot.sensorColor)){
-            backwardDriveInches(-3);
-            sleep(500);
-            //forwardDriveInches(3);
-        }
-        else {
-            if (isBlue(robot.sensorColor)) {
-                forwardDriveInches(3);
-                sleep(500);
-                //backwardDriveInches(-3);
-            }
-        }
-
-        // Step 5: Bring jewel arm back up
-        raiseJewelArm();
-
-        // Step 6:
+        // Step 4:
         forwardDriveInches(24);
 
-        // Step 7: Turn towards crypto box
+        // Step 5: Turn towards crypto box
         //turnLeft(45);
 
-        // Step 8: Drive forward
+        // Step 6: Drive forward
         //forwardDriveInches(22);
 
-        // Step 9: place glyph in crypto box
+        // Step 7: place glyph in crypto box
         //openGlyphGrabber();
 
-        // Step 10: Back up
+        // Step 8: Back up
         //backwardDriveInches(6);
     }
 }

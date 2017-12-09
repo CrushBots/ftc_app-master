@@ -7,9 +7,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Created by CrushBots for the 2017-2018 FTC season
  */
 
-@Autonomous(name="Blue Right", group="Autonomous")
+@Autonomous(name="Test DC Motors ", group="Test")
 //@Disabled
-public class Auto_BlueRight extends Auto_CommonFunctions {
+public class Test_DCMotors extends Auto_CommonFunctions {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -31,28 +31,29 @@ public class Auto_BlueRight extends Auto_CommonFunctions {
         while (!(isStarted() || isStopRequested())) {
         }
 
-        // Step 1: Knock off the Red Jewel
-        knockJewel(ALLIANCE_BLUE);
+        // Test 1: Drive motors
+        telemetry.addData("Testing ", "Drive motors");
+        telemetry.update();
+        sleep(2500);
 
-        // Step 2: Read the Pictograph
-        readPictograph();
+        robot.setDrivePower(0.5,0.0,0.0,0.0);
+        telemetry.addData("", "Left front drive");
+        telemetry.update();
+        sleep(2500);
 
-        // Step 3: Move into front of the Cryptobox
-        switch (robot.vuMark) {
-            case LEFT:
-                backwardDriveInches(20);
-                break;
-            case RIGHT:
-                backwardDriveInches(30);
-                break;
-            default:
-                backwardDriveInches(40);
-                break;
-        }
-        turnRight(90);
+        robot.setDrivePower(0.0,0.5,0.0,0.0);
+        telemetry.addData("", "Right front drive");
+        telemetry.update();
+        sleep(2500);
 
-        // Step 4: Release Glyphs
-        forwardDriveInches(10);
-        backwardDriveInches(5);
+        robot.setDrivePower(0.0,0.0,0.5,0.0);
+        telemetry.addData("", "Left back drive");
+        telemetry.update();
+        sleep(2500);
+
+        robot.setDrivePower(0.0,0.0,0.0,0.5);
+        telemetry.addData("", "Right back drive");
+        telemetry.update();
+        sleep(2500);
     }
 }

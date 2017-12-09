@@ -4,12 +4,12 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
@@ -27,42 +27,54 @@ import static java.lang.Thread.sleep;
     public DcMotor leftBack = null;
     public DcMotor rightFront = null;
     public DcMotor rightBack = null;
-    public DcMotor upperCenterLift = null;
-    public DcMotor lowerCenterLift = null;
     public DcMotor relicArm = null;
+    public DcMotor flipRamp = null;
+    public DcMotor flopPulley = null;
 
-    public Servo rightGlyphServo = null;
-    public Servo leftGlyphServo = null;
     public Servo relicWristServo = null;
     public Servo relicHandServo = null;
-    public Servo jewelArmServo = null;
+    public Servo jewelArmUpDownServo = null;
+    public Servo jewelArmLeftRightServo = null;
+    public Servo leftGlyphIntake = null;
+    public Servo rightGlyphIntake = null;
+    public Servo leftFlopRamp = null;
+    public Servo rightFlopRamp = null;
 
-    public ColorSensor sensorColor;
+    public ColorSensor jewelFarSensor;
+    public ColorSensor jewelNearSensor;
 
     public BNO055IMU gyro = null;
 
-    VuforiaLocalizer vuforia = null;
-    VuforiaTrackables relicTrackables = null;
-    VuforiaTrackable relicTemplate = null;
-    RelicRecoveryVuMark vuMark = null;
+    static final double JEWEL_ARM_SERVO_START_POS = 0.0;
+    static final double JEWEL_ARM_SERVO_UP_POS = 0.2;
+    static final double JEWEL_ARM_SERVO_DOWN_POS = 0.9;
 
-    static final double JEWEL_ARM_SERVO_MAX_POS = 1.0;
-    static final double JEWEL_ARM_SERVO_MIN_POS = 0.3;
+    static final double JEWEL_ARM_SERVO_LEFT_POS = 0.4;
+    static final double JEWEL_ARM_SERVO_MIDDLE_POS = 0.6;
+    static final double JEWEL_ARM_SERVO_RIGHT_POS = 0.8;
 
-    static final double RIGHT_GLYPH_SERVO_WIDE_OPEN_POS = 1.0;
-    static final double RIGHT_GLYPH_SERVO_OPEN_POS = 1.0;
-    static final double RIGHT_GLYPH_SERVO_CLOSED_POS = 0.3;
+    static final double RIGHT_GLYPH_INTAKE_ON = 0.0;
+    static final double RIGHT_GLYPH_INTAKE_OFF = 0.5;
 
-    static final double LEFT_GLYPH_SERVO_WIDE_OPEN_POS = 0.0;
-    static final double LEFT_GLYPH_SERVO_OPEN_POS = 0.4;
-    static final double LEFT_GLYPH_SERVO_CLOSED_POS = 0.7;
+    static final double LEFT_GLYPH_INTAKE_ON = 1.0;
+    static final double LEFT_GLYPH_INTAKE_OFF = 0.5;
 
     static final double RELIC_WRIST_SERVO_UP_POS = 1.0;
-    static final double RELIC_WRIST_SERVO_DOWN_POS = 0.1;
+    static final double RELIC_WRIST_SERVO_DOWN_POS = 0.0;
 
-    static final double RELIC_HAND_SERVO_UP_POS = 1.0;
-    static final double RELIC_HAND_SERVO_DOWN_POS = 0.0;
+    static final double RELIC_HAND_SERVO_OPEN_POS = 0.5;
+    static final double RELIC_HAND_SERVO_CLOSE_POS = 0.0;
 
+    static final double LEFT_FLOP_FORWARD_POS = 0.0;
+    static final double LEFT_FLOP_BACK_POS = 1.0;
+
+    static final double RIGHT_FLOP_FORWARD_POS = 1.0;
+    static final double RIGHT_FLOP_BACK_POS = 0.0;
+
+
+    public VuforiaTrackables relicTrackables = null;
+    public VuforiaTrackable relicTemplate = null;
+    public RelicRecoveryVuMark vuMark = null;
 
     /* Local members. */
     HardwareMap hwMap = null;
@@ -85,63 +97,65 @@ import static java.lang.Thread.sleep;
         leftBack = hwMap.dcMotor.get("leftBack");
         rightFront = hwMap.dcMotor.get("rightFront");
         rightBack = hwMap.dcMotor.get("rightBack");
-        upperCenterLift = hwMap.dcMotor.get("upperCenterLift");
-        lowerCenterLift = hwMap.dcMotor.get("lowerCenterLift");
         relicArm = hwMap.dcMotor.get("relicArm");
+        flipRamp = hwMap.dcMotor.get("flipRamp");
+        flopPulley = hwMap.dcMotor.get("flopPulley");
 
         // Set the direction of the motors to FORWARD or REVERSE
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD );
         rightBack.setDirection(DcMotor.Direction.FORWARD);
-        upperCenterLift.setDirection(DcMotor.Direction.FORWARD);
-        lowerCenterLift.setDirection(DcMotor.Direction.FORWARD);
         relicArm.setDirection(DcMotor.Direction.FORWARD);
+        flipRamp.setDirection(DcMotor.Direction.FORWARD);
+        flopPulley.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to zero power
         leftFront.setPower(0);
         leftBack.setPower(0);
         rightFront.setPower(0);
         rightBack.setPower(0);
-        upperCenterLift.setPower(0);
-        lowerCenterLift.setPower(0);
         relicArm.setPower(0);
+        flipRamp.setPower(0);
+        flopPulley.setPower(0);
 
         // Set all motors to RUN_USING_ENCODER or RUN_WITHOUT_ENCODER.
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        upperCenterLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        lowerCenterLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         relicArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        flipRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        flopPulley.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Set all Zero Power Behavior - FLOAT or BREAK
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        upperCenterLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lowerCenterLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        relicArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        relicArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flipRamp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flopPulley.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         /**
          *  Define and set start position on Servos
          */
-        jewelArmServo = hwMap.servo.get("jewelArm");
-        jewelArmServo.setPosition(JEWEL_ARM_SERVO_MAX_POS);
+        jewelArmUpDownServo = hwMap.servo.get("jewelArmUpDown");
 
-        rightGlyphServo = hwMap.servo.get("rightGlyph");
-        //rightGlyphServo.setPosition(RIGHT_GLYPH_SERVO_CLOSED_POS);
-
-        leftGlyphServo = hwMap.servo.get("leftGlyph");
-        //leftGlyphServo.setPosition(LEFT_GLYPH_SERVO_CLOSED_POS);
+        jewelArmLeftRightServo = hwMap.servo.get("jewelArmLeftRight");
+        jewelArmLeftRightServo.setPosition(JEWEL_ARM_SERVO_MIDDLE_POS);
 
         relicWristServo = hwMap.servo.get("relicWrist");
-        //relicWristServo.setPosition(RELIC_WRIST_SERVO_DOWN_POS);
 
         relicHandServo = hwMap.servo.get("relicHand");
-        //relicHandServo.setPosition(RELIC_HAND_SERVO_DOWN_POS);
+
+        leftGlyphIntake = hwMap.servo.get("leftGlyphIntake");
+
+        rightGlyphIntake = hwMap.servo.get("rightGlyphIntake");
+
+        leftFlopRamp = hwMap.servo.get("leftFlopRamp");
+
+        rightFlopRamp = hwMap.servo.get("rightFlopRamp");
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
@@ -160,29 +174,38 @@ import static java.lang.Thread.sleep;
         gyro = hwMap.get(BNO055IMU.class, "gyro");
         gyro.initialize(parameters);
 
-        /**
+        /**********************************************************************************
          *  Define and setup Color sensors
-         */
-        sensorColor = hwMap.get(ColorSensor.class, "colorDistanceSensor");
+         **********************************************************************************/
+        jewelFarSensor = hwMap.get(ColorSensor.class, "jewelFarSensor");
+        jewelNearSensor = hwMap.get(ColorSensor.class, "jewelNearSensor");
 
+        /**********************************************************************************
+         *  Define and setup Vuforia
+         **********************************************************************************/
+        //VuforiaLocalizer vuforia;
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
          * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
          */
-        VuforiaLocalizer.Parameters vuParameters = new VuforiaLocalizer.Parameters();
-        vuParameters.vuforiaLicenseKey = "AXGsSd3/////AAAAGfr/fIb4S0kzvQ/FHKNWbEEmqBZLr+0MMwryEhTuYhb0Cvi89bYECD1QnBBec+cclaRl8HOmg0RC24qs1R58Ol3LW7fx8J5Jj9pOUmxMDMowgkeFG7Swg2J1NUCXOqmNPyHw79dGgTJ8kCcagfBc/nZoVKoLR8CFP7vf3uP3rH10GLp1R4qZpS6qJEpqJragorOkEmu7CvkNt2Y5KKIY+NfD5W8BFvdQg34jheSu+WwFUNDz2N46GXFerpon+dgyIqZydvmO79rHtkFhH29ip569TRnPLNz/cEJNAdn6d3JQmUoB7p8uCYmBmmfC1WkJxKrP9NdnVc+VME5jaw62NZy5mXtkfvi+gZF7unlDoVXp";
-        vuParameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;   // Which camera that we wish to use.
-        this.vuforia = ClassFactory.createVuforiaLocalizer(vuParameters);
+        //int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
+        //VuforiaLocalizer.Parameters vuforiaPparameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        /**
-         * Load the data set containing the VuMarks for Relic Recovery. There's only one trackable
-         * in this data set: all three of the VuMarks in the game were created from this one template,
-         * but differ in their instance id information.
-         * @see VuMarkInstanceId
-         */
-        relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
+        // OR...  Do Not Activate the Camera Monitor View, to save power
+        //VuforiaLocalizer.Parameters vuforiaPparameters = new VuforiaLocalizer.Parameters();
+
+        // License key to use Vuforia is from https://developer.vuforia.com/license-manager.
+        //vuforiaPparameters.vuforiaLicenseKey = "AXGsSd3/////AAAAGfr/fIb4S0kzvQ/FHKNWbEEmqBZLr+0MMwryEhTuYhb0Cvi89bYECD1QnBBec+cclaRl8HOmg0RC24qs1R58Ol3LW7fx8J5Jj9pOUmxMDMowgkeFG7Swg2J1NUCXOqmNPyHw79dGgTJ8kCcagfBc/nZoVKoLR8CFP7vf3uP3rH10GLp1R4qZpS6qJEpqJragorOkEmu7CvkNt2Y5KKIY+NfD5W8BFvdQg34jheSu+WwFUNDz2N46GXFerpon+dgyIqZydvmO79rHtkFhH29ip569TRnPLNz/cEJNAdn6d3JQmUoB7p8uCYmBmmfC1WkJxKrP9NdnVc+VME5jaw62NZy5mXtkfvi+gZF7unlDoVXp";
+
+        // Indicate which camera to use: BACK (HiRes camera with greater range) or FRONT
+        //vuforiaPparameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+
+        //vuforia = ClassFactory.createVuforiaLocalizer(vuforiaPparameters);
+
+        // Load the data set containing the VuMarks for Relic Recovery.
+        //relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
+        //relicTemplate = relicTrackables.get(0);
+        //relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
 
     }
 
@@ -212,6 +235,26 @@ import static java.lang.Thread.sleep;
         leftBack.setPower(leftBackPower / max);
         rightBack.setPower(rightBackPower / max);
     }
+
+    public void turnOnIntake (){
+        rightGlyphIntake.setPosition(RIGHT_GLYPH_INTAKE_ON);
+        leftGlyphIntake.setPosition(LEFT_GLYPH_INTAKE_ON);
+    }
+    public void turnOffIntake (){
+        rightGlyphIntake.setPosition(RIGHT_GLYPH_INTAKE_OFF);
+        leftGlyphIntake.setPosition(LEFT_GLYPH_INTAKE_OFF);
+    }
+
+    public void flopForward (){
+        leftFlopRamp.setPosition(LEFT_FLOP_FORWARD_POS);
+        rightFlopRamp.setPosition(RIGHT_FLOP_FORWARD_POS);
+    }
+
+    public void flopBack (){
+        leftFlopRamp.setPosition(LEFT_FLOP_BACK_POS);
+        rightFlopRamp.setPosition(LEFT_FLOP_BACK_POS);
+    }
+
 
     /***
      *

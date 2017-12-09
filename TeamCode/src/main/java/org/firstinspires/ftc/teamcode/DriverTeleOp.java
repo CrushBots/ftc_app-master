@@ -1,16 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-
-import java.util.Locale;
-
-import static org.firstinspires.ftc.teamcode.CrushyHardware.*;
+import static java.lang.Thread.sleep;
 
 /**
  * Created by CrushBots for the 2017-2018 FTC season
@@ -20,45 +12,21 @@ import static org.firstinspires.ftc.teamcode.CrushyHardware.*;
 //@Disabled
 public class DriverTeleOp extends CommonFunctions {
 
-    /* Declare members. */
-    private double speedControl = 1.0;
-
-    private static final double shooterChangePower = 0.01;
-    private double shooterPower = 0.0;
-    private boolean shooterStarted = false;
-    private boolean rightBumperIsPressed = false;
+    /*
+    * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
+    */
+    //@Override
+    //public void init_loop() {
+     //   robot.jewelArmUpDownServo.setPosition(robot.JEWEL_ARM_SERVO_UP_POS);
+      //  robot.jewelArmLeftRightServo.setPosition(robot.JEWEL_ARM_SERVO_MIDDLE_POS);
+    //}
 
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     @Override
     public void loop() {
-        //telemetry.addData("Status", "Running: " + runtime.toString());
-
-        double left;
-        double right;
-        double max;
-        double leftPower;
-        double rightPower;
-
-        /*
-         * Driver - Left Bumper - Increase Speed
-         */
-        if (gamepad1.left_bumper) {
-            speedControl = 1.0;
-        } else {
-            speedControl = 1.0;
-            //telemetry.addData("speedControl", speedControl);
-        }
-
-        /*
-         * Driver - Right Bumper - Decrease Speed
-         */
-        if (gamepad1.right_bumper) {
-            speedControl = 1.0;
-        } else {
-            speedControl = 1.0;
-        }
+        telemetry.addData("Status", "Running: " + runtime.toString());
 
         double drive;
         double strafe;
@@ -68,10 +36,10 @@ public class DriverTeleOp extends CommonFunctions {
         double leftBackPower;
         double rightBackPower;
 
-        /*
+        /******************************************************************
          * Driver - Left Joy Stick - Forward / Reverse
          * Driver - Right Joy Stick - Left / Right
-         */
+         ******************************************************************/
         drive = -gamepad1.left_stick_y;
         strafe = gamepad1.left_stick_x;
         rotate = gamepad1.right_stick_x;
@@ -81,142 +49,87 @@ public class DriverTeleOp extends CommonFunctions {
         rightFrontPower = drive - strafe - rotate;
         leftBackPower = drive - strafe + rotate;
         rightBackPower = drive + strafe - rotate;
-
         robot.setDrivePower(leftFrontPower, rightFrontPower, leftBackPower, rightBackPower);
 
-        /*
-         * Co-Driver - Right Joy Stick - Center Lift
-         */
-        if (gamepad2.right_stick_y > 0.1)
-        {
-            robot.upperCenterLift.setPower(0.4);
-            robot.lowerCenterLift.setPower(0.4);
-        }
-        else if (gamepad2.right_stick_y < -0.1)
-        {
-            robot.upperCenterLift.setPower(-0.2);
-            robot.lowerCenterLift.setPower(-0.2);
-        }
-        else
-        {
-            robot.upperCenterLift.setPower(0.0);
-            robot.lowerCenterLift.setPower(0.0);
-        }
-
-
-        /*
-         * Co-Driver - A Button - Relic Arm Out
-         */
-        if (gamepad2.a)
-        {
-            robot.relicArm.setPower(1.0);
+        /******************************************************************
+         * Name? - Left Joy Stick - Relic Wrist Up / Down
+         * Name? - Right Joy Stick - Relic Arm Out / In
+         * Name? - xxx - Relic Hand Open / Closed
+         ******************************************************************/
+        if (gamepad2.left_stick_y > 0.0 ) {
+            robot.flipRamp.setPower(-0.6);
         }
         else {
-            robot.relicArm.setPower(0.0);
+            robot.flipRamp.setPower(0.0);
         }
 
-        /*
-         * Co-Driver - B Button - Relic Arm In
-         */
-        if (gamepad2.b)
-        {
-            robot.relicArm.setPower(-1.0);
+        if (gamepad2.left_stick_y < 0.0 ) {
+            robot.flipRamp.setPower(0.3);
         }
         else {
-            robot.relicArm.setPower(0.0);
+            robot.flipRamp.setPower(0.0);
         }
 
-        if (gamepad2.x)
-        {
-            robot.relicHandServo.setPosition(RELIC_HAND_SERVO_UP_POS);
+        if (gamepad2.right_stick_y > 0.0 ) {
+            robot.flopForward();
         }
 
-        if (gamepad2.y)
-        {
-            robot.relicHandServo.setPosition(RELIC_HAND_SERVO_DOWN_POS);
+        if (gamepad2.right_stick_y < 0.0 ) {
+            robot.flopBack();
         }
 
-        /*
-         * Co-Driver - B Button - Relic Arm In
-         */
-        if (gamepad2.left_bumper)
-        {
-            telemetry.addData("Status", "Left Bumper Pushed");
+        if (gamepad2.dpad_up) {
+            robot.relicWristServo.setPosition(robot.RELIC_WRIST_SERVO_UP_POS);
+        }
 
-            robot.relicWristServo.setPosition(RELIC_WRIST_SERVO_UP_POS);
+        if (gamepad2.dpad_down) {
+            robot.relicWristServo.setPosition(robot.RELIC_WRIST_SERVO_DOWN_POS);
+        }
+
+        if (gamepad2.dpad_left) {
+            robot.relicHandServo.setPosition(robot.RELIC_HAND_SERVO_OPEN_POS);
+        }
+
+        if (gamepad2.dpad_right) {
+            robot.relicHandServo.setPosition(robot.RELIC_HAND_SERVO_CLOSE_POS);
+        }
+
+        if (gamepad2.y) {
+            robot.turnOnIntake();
+        }
+
+        if (gamepad2.x) {
+            robot.turnOffIntake();
+        }
+
+        if (gamepad2.a) {
+            robot.flopPulley.setPower(0.5);
         }
         else {
-            telemetry.addData("Status", "Left Bumper NOT Pushed");
+            robot.flopPulley.setPower(0.0);
         }
 
-        if (gamepad2.right_bumper)
-        {
-            telemetry.addData("Status", "Right Bumper Pushed");
-
-            robot.relicWristServo.setPosition(RELIC_WRIST_SERVO_DOWN_POS);
+        if (gamepad2.b) {
+            robot.flopPulley.setPower(-0.5);
         }
         else {
-            telemetry.addData("Status", "Right Bumper NOT Pushed");
+            robot.flopPulley.setPower(0.0);
         }
 
-        /*
-         * Co-Driver - Left Joy Stick - Glyph Open/Close
-         */
-        if (gamepad2.left_stick_y > 0.1)
-        {
-            robot.rightGlyphServo.setPosition(RIGHT_GLYPH_SERVO_OPEN_POS);
-            robot.leftGlyphServo.setPosition(LEFT_GLYPH_SERVO_OPEN_POS);
-
-        }
-        else if (gamepad2.left_stick_y < -0.1)
-        {
-            robot.rightGlyphServo.setPosition(RIGHT_GLYPH_SERVO_CLOSED_POS);
-            robot.leftGlyphServo.setPosition(LEFT_GLYPH_SERVO_CLOSED_POS);
-        }
-
-        Orientation angles;
-
-        angles = robot.gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-
-       // telemetry.addData("Heading:", formatAngle(angles.angleUnit, angles.firstAngle));
-
-        if(gamepad1.y){
-            double heading = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-            heading = convertHeading(heading);
-
-            double targetHeading = heading + 90;
-
-            while(heading < targetHeading) {
-                robot.leftBack.setPower(-0.4);
-                robot.leftFront.setPower(-0.4);
-                robot.rightBack.setPower(0.4);
-                robot.rightFront.setPower(0.4);
-
-                angles = robot.gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-                heading = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                heading = convertHeading(heading);
+        if (gamepad2.left_bumper) {
+            if (robot.relicArm.getPower() > 0) {
+                robot.relicArm.setPower(0.0);
+            } else {
+                robot.relicArm.setPower(0.3);
             }
-
-            robot.leftBack.setPower(0.0);
-            robot.leftFront.setPower(0.0);
-            robot.rightBack.setPower(0.0);
-            robot.rightFront.setPower(0.0);
-        }
-    }
-
-    double convertHeading (double heading){
-        if (heading < 0){
-            return 360 + heading;
         }
 
-        return heading;
-    }
-
-    String formatAngle(AngleUnit angleUnit, double angle) {
-        return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
-    }
-
-    String formatDegrees(double degrees){
-        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
+        if (gamepad2.right_bumper) {
+            if (robot.relicArm.getPower() > 0) {
+                robot.relicArm.setPower(0.0);
+            } else {
+                robot.relicArm.setPower(-0.3);
+            }
+        }
     }
 }
