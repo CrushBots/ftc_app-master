@@ -35,7 +35,20 @@ public class Auto_RedRight extends Auto_CommonFunctions {
         knockJewel(ALLIANCE_RED);
 
         // Step 4:
-        forwardDriveInches(24);
+        //backwardDriveInches(24);
+        robot.setDrivePower(-0.7,-0.7,-0.7,-0.7);
+        sleep(2400);
+        robot.setDrivePower(0.0,0.0,0.0,0.0);
+        strafeRobot(0.7,"right");
+        sleep(750);
+        stopRobot();
+        robot.setDrivePower(0.0,0.5,0.0,0.5);
+        sleep(1500);
+        robot.setDrivePower(0.0,0.0,0.0,0.0);
+        robot.flopForward();
+        robot.setDrivePower(0.7,0.7,0.7,0.7);
+        sleep(1000);
+        robot.setDrivePower(0.0,0.0,0.0,0.0);
 
         // Step 5: Turn towards crypto box
         //turnLeft(45);

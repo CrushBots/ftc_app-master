@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.ConceptVuforiaNavigation;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -51,7 +52,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 //@Disabled
 public class Test_VuMarkIdentification extends Auto_CommonFunctions {
 
-    CrushyHardware robot = new CrushyHardware();
+    /* Declare OpMode members. */
+    private ElapsedTime runtime = new ElapsedTime();
 
     @Override public void runOpMode() {
 
@@ -64,7 +66,7 @@ public class Test_VuMarkIdentification extends Auto_CommonFunctions {
         telemetry.update();
         waitForStart();
 
-        //activateVuMark();
+        activateVuMark();
 
         while (opModeIsActive()) {
 
@@ -73,10 +75,10 @@ public class Test_VuMarkIdentification extends Auto_CommonFunctions {
              * RelicRecoveryVuMark is an enum which can have the following values:
              * UNKNOWN, LEFT, CENTER, and RIGHT.
              */
-            //telemetry.addData("VuMark", "%s visible", readVuMark());
+            telemetry.addData("VuMark", "%s visible", readVuMark());
             telemetry.update();
         }
 
-        //deactivateVuMark();
+        deactivateVuMark();
     }
 }

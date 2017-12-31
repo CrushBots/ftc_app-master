@@ -77,18 +77,18 @@ public class Auto_CommonFunctions extends LinearOpMode {
 
         }
 
-        moveServo(robot.jewelArmLeftRightServo,JEWEL_ARM_SERVO_MIDDLE_POS);
-        telemetry.addData("Servo is ", "MIDDLE");
-        telemetry.update();
-        //sleep(5000);
-
         moveServo(robot.jewelArmUpDownServo,JEWEL_ARM_SERVO_UP_POS);
         telemetry.addData("Servo is ", "UP");
         telemetry.update();
         //sleep(5000);
+
+        moveServo(robot.jewelArmLeftRightServo,JEWEL_ARM_SERVO_MIDDLE_POS);
+        telemetry.addData("Servo is ", "MIDDLE");
+        telemetry.update();
+        //sleep(5000);
     }
 
-    public void forwardDriveInches(int inches) {
+    public void backwardDriveInches(int inches) {
         int targetTicks = 0;
 
         // Ticks per revolution is 1220
@@ -109,7 +109,7 @@ public class Auto_CommonFunctions extends LinearOpMode {
 
     }
 
-    public void backwardDriveInches(int inches) {
+    public void forwardDriveInches(int inches) {
         int targetTicks = 0;
 
         // Ticks per revolution is 1220
@@ -319,29 +319,28 @@ public class Auto_CommonFunctions extends LinearOpMode {
     }
 
     public void activateVuMark() {
-        //robot.relicTrackables.activate();
+        robot.relicTrackables.activate();
         sleep(500);
     }
 
     public void deactivateVuMark() {
-        //robot.relicTrackables.deactivate();
+        robot.relicTrackables.deactivate();
         sleep(500);
     }
 
-    //RelicRecoveryVuMark readVuMark() {
+    RelicRecoveryVuMark readVuMark() {
 
         /**
-         * See if any of the instances of {@link relicTemplate} are currently visible.
+         * See if a are currently visible.
          * {@link RelicRecoveryVuMark} is an enum which can have the following values:
          * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
          * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
          */
-        //RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(robot.relicTemplate);
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(robot.relicTemplate);
 
-        //return vuMark;
-        //return vuMark;
+        return vuMark;
 
-    //}
+    }
 
     public void readPictograph() {
         //activateVuMark();
