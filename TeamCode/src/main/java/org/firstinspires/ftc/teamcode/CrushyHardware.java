@@ -60,7 +60,7 @@ import static java.lang.Thread.sleep;
     static final double LEFT_GLYPH_INTAKE_OFF = 0.5;
 
     static final double RELIC_WRIST_SERVO_UP_POS = 1.0;
-    static final double RELIC_WRIST_SERVO_DOWN_POS = 0.0;
+    static final double RELIC_WRIST_SERVO_DOWN_POS = 0.2;
 
     static final double RELIC_HAND_SERVO_OPEN_POS = 0.5;
     static final double RELIC_HAND_SERVO_CLOSE_POS = 0.0;
@@ -183,29 +183,29 @@ import static java.lang.Thread.sleep;
         /**********************************************************************************
          *  Define and setup Vuforia
          **********************************************************************************/
-        //VuforiaLocalizer vuforia;
+        VuforiaLocalizer vuforia;
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
          * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
          */
-        //int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
-        //VuforiaLocalizer.Parameters vuforiaPparameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters vuforiaPparameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
         // OR...  Do Not Activate the Camera Monitor View, to save power
         //VuforiaLocalizer.Parameters vuforiaPparameters = new VuforiaLocalizer.Parameters();
 
         // License key to use Vuforia is from https://developer.vuforia.com/license-manager.
-        //vuforiaPparameters.vuforiaLicenseKey = "AXGsSd3/////AAAAGfr/fIb4S0kzvQ/FHKNWbEEmqBZLr+0MMwryEhTuYhb0Cvi89bYECD1QnBBec+cclaRl8HOmg0RC24qs1R58Ol3LW7fx8J5Jj9pOUmxMDMowgkeFG7Swg2J1NUCXOqmNPyHw79dGgTJ8kCcagfBc/nZoVKoLR8CFP7vf3uP3rH10GLp1R4qZpS6qJEpqJragorOkEmu7CvkNt2Y5KKIY+NfD5W8BFvdQg34jheSu+WwFUNDz2N46GXFerpon+dgyIqZydvmO79rHtkFhH29ip569TRnPLNz/cEJNAdn6d3JQmUoB7p8uCYmBmmfC1WkJxKrP9NdnVc+VME5jaw62NZy5mXtkfvi+gZF7unlDoVXp";
+        vuforiaPparameters.vuforiaLicenseKey = "AXGsSd3/////AAAAGfr/fIb4S0kzvQ/FHKNWbEEmqBZLr+0MMwryEhTuYhb0Cvi89bYECD1QnBBec+cclaRl8HOmg0RC24qs1R58Ol3LW7fx8J5Jj9pOUmxMDMowgkeFG7Swg2J1NUCXOqmNPyHw79dGgTJ8kCcagfBc/nZoVKoLR8CFP7vf3uP3rH10GLp1R4qZpS6qJEpqJragorOkEmu7CvkNt2Y5KKIY+NfD5W8BFvdQg34jheSu+WwFUNDz2N46GXFerpon+dgyIqZydvmO79rHtkFhH29ip569TRnPLNz/cEJNAdn6d3JQmUoB7p8uCYmBmmfC1WkJxKrP9NdnVc+VME5jaw62NZy5mXtkfvi+gZF7unlDoVXp";
 
         // Indicate which camera to use: BACK (HiRes camera with greater range) or FRONT
-        //vuforiaPparameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        vuforiaPparameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
-        //vuforia = ClassFactory.createVuforiaLocalizer(vuforiaPparameters);
+        vuforia = ClassFactory.createVuforiaLocalizer(vuforiaPparameters);
 
         // Load the data set containing the VuMarks for Relic Recovery.
-        //relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
-        //relicTemplate = relicTrackables.get(0);
-        //relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
+        relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
+        relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
 
     }
 

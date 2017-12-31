@@ -38,21 +38,32 @@ public class Auto_BlueRight extends Auto_CommonFunctions {
         readPictograph();
 
         // Step 3: Move into front of the Cryptobox
-        switch (robot.vuMark) {
-            case LEFT:
-                backwardDriveInches(20);
-                break;
-            case RIGHT:
-                backwardDriveInches(30);
-                break;
-            default:
-                backwardDriveInches(40);
-                break;
-        }
-        turnRight(90);
+        //switch (robot.vuMark) {
+            //case LEFT:
+                //backwardDriveInches(20);
+                //break;
+            //case RIGHT:
+                //backwardDriveInches(30);
+                //break;
+            //default:
+                //backwardDriveInches(40);
+                //break;
+        //}
+        //forwardDriveInches(15);
+        robot.setDrivePower(-0.7,-0.7,-0.7,-0.7);
+        sleep(1500);
+        robot.setDrivePower(0.0,0.0,0.0,0.0);
+        //turnLeft(90);
+        robot.setDrivePower(0.0,0.5,0.0,0.5);
+        sleep(750);
+        robot.setDrivePower(0.0,0.0,0.0,0.0);
+        robot.flopForward();
 
         // Step 4: Release Glyphs
-        forwardDriveInches(10);
-        backwardDriveInches(5);
+        //forwardDriveInches(10);
+        robot.setDrivePower(-0.7,-0.7,-0.7,-0.7);
+        sleep(1000);
+        robot.setDrivePower(0.0,0.0,0.0,0.0);
+        //backwardDriveInches(5);
     }
 }

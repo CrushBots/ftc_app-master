@@ -36,6 +36,7 @@ public class DriverTeleOp extends CommonFunctions {
         double leftBackPower;
         double rightBackPower;
 
+        robot.jewelArmUpDownServo.setPosition(robot.JEWEL_ARM_SERVO_UP_POS);
         /******************************************************************
          * Driver - Left Joy Stick - Forward / Reverse
          * Driver - Right Joy Stick - Left / Right

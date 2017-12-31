@@ -34,28 +34,40 @@ public class Auto_RedLeft extends Auto_CommonFunctions {
 
         // Step 1: Knock off the Red Jewel
         knockJewel(ALLIANCE_RED);
+        sleep(500);
 
         // Step 2: Read the Pictograph
         readPictograph();
 
         // Step 3: Move into front of the Cryptobox
-        turnLeft(45);
-        switch (robot.vuMark) {
-            case LEFT:
-                forwardDriveInches(20);
-                break;
-            case RIGHT:
-                forwardDriveInches(30);
-                break;
-            default:
-                forwardDriveInches(40);
-                break;
-        }
-        turnRight(45);
+        //turnLeft(45);
+        //switch (robot.vuMark) {
+            //case LEFT:
+                //forwardDriveInches(20);
+                //break;
+            //case RIGHT:
+                //forwardDriveInches(30);
+                //break;
+            //default:
+                //forwardDriveInches(40);
+                //break;
+        //}
+        //backwardDriveInches(20);
+        robot.setDrivePower(0.7,0.7,0.7,0.7);
+        sleep(2000);
+        robot.setDrivePower(0.0,0.0,0.0,0.0);
+        //turnLeft(90);
+        robot.setDrivePower(0.0,0.5,0.0,0.5);
+        sleep(750);
+        robot.setDrivePower(0.0,0.0,0.0,0.0);
+        //robot.flopForward();
 
         // Step 4: Release Glyphs
-        forwardDriveInches(5);
-        backwardDriveInches(5);
+        //forwardDriveInches(10);
+        //robot.setDrivePower(-0.7,-0.7,-0.7,-0.7);
+        //sleep(1000);
+        //robot.setDrivePower(0.0,0.0,0.0,0.0);
+        //backwardDriveInches(5);
 
     }
 }
