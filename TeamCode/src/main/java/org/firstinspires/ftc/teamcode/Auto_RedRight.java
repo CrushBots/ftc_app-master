@@ -34,32 +34,33 @@ public class Auto_RedRight extends Auto_CommonFunctions {
         // Step 1: Knock off the blue Jewel
         knockJewel(ALLIANCE_RED);
 
-        // Step 4:
-        //backwardDriveInches(24);
-        robot.setDrivePower(-0.7,-0.7,-0.7,-0.7);
-        sleep(2400);
-        robot.setDrivePower(0.0,0.0,0.0,0.0);
-        strafeRobot(0.7,"right");
-        sleep(750);
-        stopRobot();
-        robot.setDrivePower(0.0,0.5,0.0,0.5);
-        sleep(1500);
-        robot.setDrivePower(0.0,0.0,0.0,0.0);
+        // Step 2: Read the Pictograph
+        readPictograph();
+
+        // Step 3: Move into front of the Cryptobox
+
+        forwardDriveInches(15);
+
+        switch (robot.pictograph) {
+            case LEFT:
+                strafeRobot(0.7, "left");
+                sleep(1000);
+            case RIGHT:
+                strafeRobot(0.7, "left");
+                sleep(600);
+            default:
+                strafeRobot(0.7, "left");
+                sleep(800);
+        }
+
+        // Step 4: Flop the Glyph upright
         robot.flopForward();
-        robot.setDrivePower(0.7,0.7,0.7,0.7);
-        sleep(1000);
-        robot.setDrivePower(0.0,0.0,0.0,0.0);
 
-        // Step 5: Turn towards crypto box
-        //turnLeft(45);
+        // Step 5: push glyphs into place
+        forwardDriveInches(7);
 
-        // Step 6: Drive forward
-        //forwardDriveInches(22);
+        // Step 6: Release the glyphs
+        backwardDriveInches(3);
 
-        // Step 7: place glyph in crypto box
-        //openGlyphGrabber();
-
-        // Step 8: Back up
-        //backwardDriveInches(6);
     }
 }

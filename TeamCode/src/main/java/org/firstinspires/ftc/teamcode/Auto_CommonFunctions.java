@@ -98,11 +98,17 @@ public class Auto_CommonFunctions extends LinearOpMode {
         robot.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Wait for encoders reset
-        while (opModeIsActive() && (robot.leftFront.getCurrentPosition() != 0)){}
+        while (opModeIsActive() && (robot.leftFront.getCurrentPosition() != 0)){
+            telemetry.addData("Status", "Stuck in Get Current Position");
+            telemetry.update();
+        }
 
         startRobot(0.4);
 
-        while (opModeIsActive() && (robot.leftFront.getCurrentPosition() < targetTicks)) {}
+        while (opModeIsActive() && (robot.leftFront.getCurrentPosition() < targetTicks)) {
+            telemetry.addData("Status", "Stuck in less than target ticks");
+            telemetry.update();
+        }
 
         robot.setDrivePower(0.0,0.0,0.0,0.0);
         sleep(500);
@@ -231,6 +237,7 @@ public class Auto_CommonFunctions extends LinearOpMode {
         }
 
         robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
+        sleep(250);
     }
 
     public void turnLeft(int degrees){
@@ -262,8 +269,13 @@ public class Auto_CommonFunctions extends LinearOpMode {
             telemetry.addData("Target:", targetHeading);
             telemetry.update();
         }
+        telemetry.addData("Exit", "While");
+        telemetry.update();
 
         robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
+        telemetry.addData("Exit", "TurnLeft");
+        telemetry.update();
+        sleep(250);
     }
 
     public void moveServo(Servo localServo, double targetPosition){
@@ -318,35 +330,26 @@ public class Auto_CommonFunctions extends LinearOpMode {
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 
-    public void activateVuMark() {
-        robot.relicTrackables.activate();
-        sleep(500);
-    }
-
-    public void deactivateVuMark() {
-        robot.relicTrackables.deactivate();
-        sleep(500);
-    }
-
-    RelicRecoveryVuMark readVuMark() {
-
-        /**
-         * See if a are currently visible.
-         * {@link RelicRecoveryVuMark} is an enum which can have the following values:
-         * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
-         * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
-         */
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(robot.relicTemplate);
-
-        return vuMark;
-
-    }
-
     public void readPictograph() {
-        //activateVuMark();
 
-        //robot.vuMark = readVuMark();
+    long StartTime = ElapsedTime.MILLIS_IN_NANO;
 
-        //deactivateVuMark();
+        robot.relicTrackables.activate();
+        telemetry.addData("Activate VuMark", "Activate VuMark");
+        telemetry.update();
+
+        while (opModeIsActive() && !((robot.pictograph != RelicRecoveryVuMark.UNKNOWN) || ((ElapsedTime.MILLIS_IN_NANO - StartTime) < 5000))) {
+
+            /**
+             * See if any of the instances of relicTemplate are currently visible.
+             * RelicRecoveryVuMark is an enum which can have the following values:
+             * UNKNOWN, LEFT, CENTER, and RIGHT.
+             */
+            robot.pictograph = RelicRecoveryVuMark.from(robot.relicTemplate);
+        }
+
+        robot.relicTrackables.deactivate();
+        telemetry.addData("Deactivate VuMark", "Deactivate VuMark");
+        telemetry.update();
     }
 }

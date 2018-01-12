@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import static java.lang.Thread.sleep;
 
@@ -12,13 +13,16 @@ import static java.lang.Thread.sleep;
 //@Disabled
 public class DriverTeleOp extends CommonFunctions {
 
+    boolean flopPulleyMoving = false;
+
+
     /*
     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
     */
     //@Override
     //public void init_loop() {
-     //   robot.jewelArmUpDownServo.setPosition(robot.JEWEL_ARM_SERVO_UP_POS);
-      //  robot.jewelArmLeftRightServo.setPosition(robot.JEWEL_ARM_SERVO_MIDDLE_POS);
+    //   robot.jewelArmUpDownServo.setPosition(robot.JEWEL_ARM_SERVO_UP_POS);
+    //  robot.jewelArmLeftRightServo.setPosition(robot.JEWEL_ARM_SERVO_MIDDLE_POS);
     //}
 
     /*
@@ -35,8 +39,20 @@ public class DriverTeleOp extends CommonFunctions {
         double rightFrontPower;
         double leftBackPower;
         double rightBackPower;
+        double speedMultiple = 1.0;
 
         robot.jewelArmUpDownServo.setPosition(robot.JEWEL_ARM_SERVO_UP_POS);
+        robot.jewelArmLeftRightServo.setPosition(robot.JEWEL_ARM_SERVO_MIDDLE_POS);
+
+        /******************************************************************
+         * Figure out if the speed is whole or half
+         ******************************************************************/
+        if (gamepad1.left_bumper || gamepad1.right_bumper) {
+            speedMultiple = 0.5;
+        } else {
+            speedMultiple = 1.0;
+        }
+
         /******************************************************************
          * Driver - Left Joy Stick - Forward / Reverse
          * Driver - Right Joy Stick - Left / Right
@@ -46,91 +62,69 @@ public class DriverTeleOp extends CommonFunctions {
         rotate = gamepad1.right_stick_x;
 
         // calculate the base power of each motor based on x1 and y1
-        leftFrontPower = drive + strafe + rotate;
-        rightFrontPower = drive - strafe - rotate;
-        leftBackPower = drive - strafe + rotate;
-        rightBackPower = drive + strafe - rotate;
+        leftFrontPower = speedMultiple * (drive + strafe + rotate);
+        rightFrontPower = speedMultiple * (drive - strafe - rotate);
+        leftBackPower = speedMultiple * (drive - strafe + rotate);
+        rightBackPower = speedMultiple * (drive + strafe - rotate);
         robot.setDrivePower(leftFrontPower, rightFrontPower, leftBackPower, rightBackPower);
 
         /******************************************************************
-         * Name? - Left Joy Stick - Relic Wrist Up / Down
-         * Name? - Right Joy Stick - Relic Arm Out / In
-         * Name? - xxx - Relic Hand Open / Closed
+         * FLOP RAMP
          ******************************************************************/
-        if (gamepad2.left_stick_y > 0.0 ) {
-            robot.flipRamp.setPower(-0.6);
+        if (!robot.flopPulleyUp && !robot.flopRampUp && gamepad2.b) {
+            upAndFlop();
         }
-        else {
-            robot.flipRamp.setPower(0.0);
-        }
-
-        if (gamepad2.left_stick_y < 0.0 ) {
-            robot.flipRamp.setPower(0.3);
-        }
-        else {
-            robot.flipRamp.setPower(0.0);
+        if (robot.flopPulleyUp && robot.flopRampUp && gamepad2.a) {
+            flopAndDown();
         }
 
-        if (gamepad2.right_stick_y > 0.0 ) {
+        telemetry.addData("FlopRampUp: ", robot.flopRampUp);
+        telemetry.addData("Left Stick Y: ", gamepad2.left_stick_y);
+        telemetry.update();
+
+        if (!robot.flopRampUp && gamepad2.left_stick_y < -0.5) {
             robot.flopForward();
         }
 
-        if (gamepad2.right_stick_y < 0.0 ) {
+        if (robot.flopRampUp && gamepad2.left_stick_y > 0.5) {
             robot.flopBack();
         }
 
+        /******************************************************************
+         * RELIC
+         ******************************************************************/
         if (gamepad2.dpad_up) {
             robot.relicWristServo.setPosition(robot.RELIC_WRIST_SERVO_UP_POS);
         }
-
         if (gamepad2.dpad_down) {
             robot.relicWristServo.setPosition(robot.RELIC_WRIST_SERVO_DOWN_POS);
         }
-
         if (gamepad2.dpad_left) {
             robot.relicHandServo.setPosition(robot.RELIC_HAND_SERVO_OPEN_POS);
         }
-
         if (gamepad2.dpad_right) {
             robot.relicHandServo.setPosition(robot.RELIC_HAND_SERVO_CLOSE_POS);
         }
+        if (gamepad2.left_bumper) {
+            robot.relicArm.setPower(0.5);
+        } else {
+            robot.relicArm.setPower(0.0);
+        }
+        if (gamepad2.right_bumper) {
+            robot.relicArm.setPower(-0.3);
+        } else {
+            robot.relicArm.setPower(0.0);
+        }
 
+        /******************************************************************
+         * INTAKE
+         ******************************************************************/
         if (gamepad2.y) {
             robot.turnOnIntake();
         }
-
         if (gamepad2.x) {
             robot.turnOffIntake();
         }
-
-        if (gamepad2.a) {
-            robot.flopPulley.setPower(0.5);
-        }
-        else {
-            robot.flopPulley.setPower(0.0);
-        }
-
-        if (gamepad2.b) {
-            robot.flopPulley.setPower(-0.5);
-        }
-        else {
-            robot.flopPulley.setPower(0.0);
-        }
-
-        if (gamepad2.left_bumper) {
-            if (robot.relicArm.getPower() > 0) {
-                robot.relicArm.setPower(0.0);
-            } else {
-                robot.relicArm.setPower(0.3);
-            }
-        }
-
-        if (gamepad2.right_bumper) {
-            if (robot.relicArm.getPower() > 0) {
-                robot.relicArm.setPower(0.0);
-            } else {
-                robot.relicArm.setPower(-0.3);
-            }
-        }
     }
 }
+

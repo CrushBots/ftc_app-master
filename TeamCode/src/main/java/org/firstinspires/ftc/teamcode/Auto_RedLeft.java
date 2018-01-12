@@ -40,34 +40,29 @@ public class Auto_RedLeft extends Auto_CommonFunctions {
         readPictograph();
 
         // Step 3: Move into front of the Cryptobox
-        //turnLeft(45);
-        //switch (robot.vuMark) {
-            //case LEFT:
-                //forwardDriveInches(20);
-                //break;
-            //case RIGHT:
-                //forwardDriveInches(30);
-                //break;
-            //default:
-                //forwardDriveInches(40);
-                //break;
-        //}
-        //backwardDriveInches(20);
-        robot.setDrivePower(0.7,0.7,0.7,0.7);
-        sleep(2000);
-        robot.setDrivePower(0.0,0.0,0.0,0.0);
-        //turnLeft(90);
-        robot.setDrivePower(0.0,0.5,0.0,0.5);
-        sleep(750);
-        robot.setDrivePower(0.0,0.0,0.0,0.0);
-        //robot.flopForward();
 
-        // Step 4: Release Glyphs
-        //forwardDriveInches(10);
-        //robot.setDrivePower(-0.7,-0.7,-0.7,-0.7);
-        //sleep(1000);
-        //robot.setDrivePower(0.0,0.0,0.0,0.0);
-        //backwardDriveInches(5);
+        switch (robot.pictograph) {
+            case LEFT:
+                backwardDriveInches(46);
+            case RIGHT:
+                backwardDriveInches(30);
+            default:
+                backwardDriveInches(42);
+        }
 
+        // Step 4: Turn towards the cryptobox
+        turnLeft(100);
+
+        // Step 5: Flop the Glyph upright
+        robot.flopForward();
+
+        // Step 6: Push the Glyphs forward
+        forwardDriveInches(5);
+
+        // Step 7: Release the glyphs
+        backwardDriveInches(4);
+
+        // Step 5: Flop the Glyph upright
+        robot.flopBack();
     }
 }

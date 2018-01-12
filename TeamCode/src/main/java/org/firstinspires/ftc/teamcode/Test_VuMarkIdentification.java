@@ -66,8 +66,6 @@ public class Test_VuMarkIdentification extends Auto_CommonFunctions {
         telemetry.update();
         waitForStart();
 
-        activateVuMark();
-
         while (opModeIsActive()) {
 
             /**
@@ -75,10 +73,12 @@ public class Test_VuMarkIdentification extends Auto_CommonFunctions {
              * RelicRecoveryVuMark is an enum which can have the following values:
              * UNKNOWN, LEFT, CENTER, and RIGHT.
              */
-            telemetry.addData("VuMark", "%s visible", readVuMark());
-            telemetry.update();
-        }
+            readPictograph();
 
-        deactivateVuMark();
+            telemetry.addData("VuMark", "%s visible", robot.pictograph);
+            telemetry.update();
+
+            robot.pictograph = RelicRecoveryVuMark.UNKNOWN;
+        }
     }
 }

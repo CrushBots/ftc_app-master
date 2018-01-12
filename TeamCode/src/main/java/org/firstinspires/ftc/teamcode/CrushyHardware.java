@@ -4,7 +4,6 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -28,22 +27,23 @@ import static java.lang.Thread.sleep;
     public DcMotor rightFront = null;
     public DcMotor rightBack = null;
     public DcMotor relicArm = null;
-    public DcMotor flipRamp = null;
+    public DcMotor flopRamp = null;
     public DcMotor flopPulley = null;
 
     public Servo relicWristServo = null;
     public Servo relicHandServo = null;
     public Servo jewelArmUpDownServo = null;
     public Servo jewelArmLeftRightServo = null;
-    public Servo leftGlyphIntake = null;
-    public Servo rightGlyphIntake = null;
-    public Servo leftFlopRamp = null;
-    public Servo rightFlopRamp = null;
+    public Servo leftIntakeServo = null;
+    public Servo rightIntakeServo = null;
 
     public ColorSensor jewelFarSensor;
     public ColorSensor jewelNearSensor;
 
     public BNO055IMU gyro = null;
+
+    public boolean flopPulleyUp;
+    public boolean flopRampUp;
 
     static final double JEWEL_ARM_SERVO_START_POS = 0.0;
     static final double JEWEL_ARM_SERVO_UP_POS = 0.2;
@@ -53,11 +53,11 @@ import static java.lang.Thread.sleep;
     static final double JEWEL_ARM_SERVO_MIDDLE_POS = 0.6;
     static final double JEWEL_ARM_SERVO_RIGHT_POS = 0.8;
 
-    static final double RIGHT_GLYPH_INTAKE_ON = 0.0;
-    static final double RIGHT_GLYPH_INTAKE_OFF = 0.5;
+    static final double RIGHT_INTAKE_SERVO_ON = 0.0;
+    static final double RIGHT_INTAKE_SERVO_OFF = 0.5;
 
-    static final double LEFT_GLYPH_INTAKE_ON = 1.0;
-    static final double LEFT_GLYPH_INTAKE_OFF = 0.5;
+    static final double LEFT_INTAKE_SERVO_ON = 1.0;
+    static final double LEFT_INTAKE_SERVO_OFF = 0.5;
 
     static final double RELIC_WRIST_SERVO_UP_POS = 1.0;
     static final double RELIC_WRIST_SERVO_DOWN_POS = 0.2;
@@ -65,16 +65,9 @@ import static java.lang.Thread.sleep;
     static final double RELIC_HAND_SERVO_OPEN_POS = 0.5;
     static final double RELIC_HAND_SERVO_CLOSE_POS = 0.0;
 
-    static final double LEFT_FLOP_FORWARD_POS = 0.0;
-    static final double LEFT_FLOP_BACK_POS = 1.0;
-
-    static final double RIGHT_FLOP_FORWARD_POS = 1.0;
-    static final double RIGHT_FLOP_BACK_POS = 0.0;
-
-
     public VuforiaTrackables relicTrackables = null;
     public VuforiaTrackable relicTemplate = null;
-    public RelicRecoveryVuMark vuMark = null;
+    public RelicRecoveryVuMark pictograph = RelicRecoveryVuMark.UNKNOWN;
 
     /* Local members. */
     HardwareMap hwMap = null;
@@ -93,12 +86,12 @@ import static java.lang.Thread.sleep;
         /**
          *  Define and Initialize Motors
          */
-        leftFront = hwMap.dcMotor.get("leftFront");
+         leftFront = hwMap.dcMotor.get("leftFront");
         leftBack = hwMap.dcMotor.get("leftBack");
         rightFront = hwMap.dcMotor.get("rightFront");
         rightBack = hwMap.dcMotor.get("rightBack");
         relicArm = hwMap.dcMotor.get("relicArm");
-        flipRamp = hwMap.dcMotor.get("flipRamp");
+        flopRamp = hwMap.dcMotor.get("flipRamp");
         flopPulley = hwMap.dcMotor.get("flopPulley");
 
         // Set the direction of the motors to FORWARD or REVERSE
@@ -107,7 +100,7 @@ import static java.lang.Thread.sleep;
         rightFront.setDirection(DcMotor.Direction.FORWARD );
         rightBack.setDirection(DcMotor.Direction.FORWARD);
         relicArm.setDirection(DcMotor.Direction.FORWARD);
-        flipRamp.setDirection(DcMotor.Direction.FORWARD);
+        flopRamp.setDirection(DcMotor.Direction.FORWARD);
         flopPulley.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to zero power
@@ -116,8 +109,9 @@ import static java.lang.Thread.sleep;
         rightFront.setPower(0);
         rightBack.setPower(0);
         relicArm.setPower(0);
-        flipRamp.setPower(0);
+        flopRamp.setPower(0);
         flopPulley.setPower(0);
+
 
         // Set all motors to RUN_USING_ENCODER or RUN_WITHOUT_ENCODER.
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -125,7 +119,7 @@ import static java.lang.Thread.sleep;
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         relicArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        flipRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        flopRamp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flopPulley.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Set all Zero Power Behavior - FLOAT or BREAK
@@ -134,7 +128,7 @@ import static java.lang.Thread.sleep;
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         relicArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flipRamp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flopRamp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         flopPulley.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         /**
@@ -146,16 +140,10 @@ import static java.lang.Thread.sleep;
         jewelArmLeftRightServo.setPosition(JEWEL_ARM_SERVO_MIDDLE_POS);
 
         relicWristServo = hwMap.servo.get("relicWrist");
-
         relicHandServo = hwMap.servo.get("relicHand");
 
-        leftGlyphIntake = hwMap.servo.get("leftGlyphIntake");
-
-        rightGlyphIntake = hwMap.servo.get("rightGlyphIntake");
-
-        leftFlopRamp = hwMap.servo.get("leftFlopRamp");
-
-        rightFlopRamp = hwMap.servo.get("rightFlopRamp");
+        leftIntakeServo = hwMap.servo.get("leftIntakeServo");
+        rightIntakeServo = hwMap.servo.get("rightIntakeServo");
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
@@ -237,23 +225,44 @@ import static java.lang.Thread.sleep;
     }
 
     public void turnOnIntake (){
-        rightGlyphIntake.setPosition(RIGHT_GLYPH_INTAKE_ON);
-        leftGlyphIntake.setPosition(LEFT_GLYPH_INTAKE_ON);
+        rightIntakeServo.setPosition(RIGHT_INTAKE_SERVO_ON);
+        leftIntakeServo.setPosition(LEFT_INTAKE_SERVO_ON);
     }
     public void turnOffIntake (){
-        rightGlyphIntake.setPosition(RIGHT_GLYPH_INTAKE_OFF);
-        leftGlyphIntake.setPosition(LEFT_GLYPH_INTAKE_OFF);
-    }
-
-    public void flopForward (){
-        leftFlopRamp.setPosition(LEFT_FLOP_FORWARD_POS);
-        rightFlopRamp.setPosition(RIGHT_FLOP_FORWARD_POS);
+        rightIntakeServo.setPosition(RIGHT_INTAKE_SERVO_OFF);
+        leftIntakeServo.setPosition(LEFT_INTAKE_SERVO_OFF);
     }
 
     public void flopBack (){
-        leftFlopRamp.setPosition(LEFT_FLOP_BACK_POS);
-        rightFlopRamp.setPosition(LEFT_FLOP_BACK_POS);
+        flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        flopRamp.setPower(0.15);
+
+        while (flopRamp.getCurrentPosition() < 225){
+        }
+
+        flopRampUp = false;
+
+        flopRamp.setPower(0.0);
     }
+
+    public void flopForward (){
+        flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        flopRamp.setPower(-0.3);
+
+        while (flopRamp.getCurrentPosition() > -250){
+        }
+
+        flopRampUp = true;
+
+        flopRamp.setPower(0.0);
+    }
+
+
+
 
 
     /***
