@@ -50,7 +50,6 @@ public class Auto_CommonFunctions extends LinearOpMode {
         moveServo(robot.jewelArmUpDownServo,JEWEL_ARM_SERVO_DOWN_POS);
         telemetry.addData("Servo is ", "DOWN");
         telemetry.update();
-        //sleep(5000);
 
         if (((alliance == ALLIANCE_BLUE) && (isBlue(robot.jewelFarSensor))) ||
                 ((alliance == ALLIANCE_RED) && (isRed(robot.jewelFarSensor))) ||
@@ -61,8 +60,6 @@ public class Auto_CommonFunctions extends LinearOpMode {
             moveServo(robot.jewelArmLeftRightServo,JEWEL_ARM_SERVO_LEFT_POS);
             telemetry.addData("Servo is ", "LEFT");
             telemetry.update();
-            //sleep(5000);
-
         }
         else if (((alliance == ALLIANCE_BLUE) && (isRed(robot.jewelFarSensor))) ||
                 ((alliance == ALLIANCE_RED) && (isBlue(robot.jewelFarSensor))) ||
@@ -73,19 +70,15 @@ public class Auto_CommonFunctions extends LinearOpMode {
             moveServo(robot.jewelArmLeftRightServo,JEWEL_ARM_SERVO_RIGHT_POS);
             telemetry.addData("Servo is ", "RIGHT");
             telemetry.update();
-            //sleep(5000);
-
         }
 
         moveServo(robot.jewelArmUpDownServo,JEWEL_ARM_SERVO_UP_POS);
         telemetry.addData("Servo is ", "UP");
         telemetry.update();
-        //sleep(5000);
 
         moveServo(robot.jewelArmLeftRightServo,JEWEL_ARM_SERVO_MIDDLE_POS);
         telemetry.addData("Servo is ", "MIDDLE");
         telemetry.update();
-        //sleep(5000);
     }
 
     public void backwardDriveInches(int inches) {
@@ -282,10 +275,6 @@ public class Auto_CommonFunctions extends LinearOpMode {
 
         double currentPosition = localServo.getPosition();
 
-        //telemetry.addData("servoPosition", currentPosition);
-        //telemetry.update();
-        //sleep(1000);
-
         while (opModeIsActive() && (currentPosition != targetPosition)) {
 
             if (currentPosition < targetPosition) {
@@ -307,7 +296,6 @@ public class Auto_CommonFunctions extends LinearOpMode {
             localServo.setPosition(currentPosition);
             sleep(30);
         }
-
     }
 
     double convertHeading (double heading){
@@ -332,7 +320,7 @@ public class Auto_CommonFunctions extends LinearOpMode {
 
     public void readPictograph() {
 
-    long StartTime = ElapsedTime.MILLIS_IN_NANO;
+        long StartTime = ElapsedTime.MILLIS_IN_NANO;
 
         robot.relicTrackables.activate();
         telemetry.addData("Activate VuMark", "Activate VuMark");

@@ -31,16 +31,13 @@ public class Auto_RedLeft extends Auto_CommonFunctions {
         while (!(isStarted() || isStopRequested())) {
         }
 
-
         // Step 1: Knock off the Red Jewel
         knockJewel(ALLIANCE_RED);
-        sleep(500);
 
         // Step 2: Read the Pictograph
         readPictograph();
 
         // Step 3: Move into front of the Cryptobox
-
         switch (robot.pictograph) {
             case LEFT:
                 backwardDriveInches(46);
@@ -62,7 +59,7 @@ public class Auto_RedLeft extends Auto_CommonFunctions {
         // Step 7: Release the glyphs
         backwardDriveInches(4);
 
-        // Step 5: Flop the Glyph upright
+        // Step 8: Flop back the glyph ramp
         robot.flopBack();
     }
 }

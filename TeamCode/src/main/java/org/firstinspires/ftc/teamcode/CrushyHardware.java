@@ -112,15 +112,16 @@ import static java.lang.Thread.sleep;
         flopRamp.setPower(0);
         flopPulley.setPower(0);
 
-
         // Set all motors to RUN_USING_ENCODER or RUN_WITHOUT_ENCODER.
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         relicArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        flopRamp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flopPulley.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         flopPulley.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Set all Zero Power Behavior - FLOAT or BREAK
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -234,13 +235,10 @@ import static java.lang.Thread.sleep;
     }
 
     public void flopBack (){
-        flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         flopRamp.setPower(0.15);
 
-        while (flopRamp.getCurrentPosition() < 225){
-        }
+        while (flopRamp.getCurrentPosition() < 225){}
 
         flopRampUp = false;
 
@@ -248,13 +246,10 @@ import static java.lang.Thread.sleep;
     }
 
     public void flopForward (){
-        flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         flopRamp.setPower(-0.3);
 
-        while (flopRamp.getCurrentPosition() > -250){
-        }
+        while (flopRamp.getCurrentPosition() > 0){}
 
         flopRampUp = true;
 

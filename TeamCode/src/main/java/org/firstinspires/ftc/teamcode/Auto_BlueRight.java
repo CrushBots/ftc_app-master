@@ -38,14 +38,13 @@ public class Auto_BlueRight extends Auto_CommonFunctions {
         readPictograph();
 
         // Step 3: Move into front of the Cryptobox
-
         switch (robot.pictograph) {
             case LEFT:
-                forwardDriveInches(12);
+                forwardDriveInches(46);
             case RIGHT:
-                forwardDriveInches(20);
+                forwardDriveInches(30);
             default:
-                forwardDriveInches(16);
+                forwardDriveInches(42);
         }
 
         // Step 4: Turn towards the cryptobox
@@ -55,9 +54,12 @@ public class Auto_BlueRight extends Auto_CommonFunctions {
         robot.flopForward();
 
         // Step 6: Push the Glyphs forward
-        forwardDriveInches(7);
+        forwardDriveInches(5);
 
         // Step 7: Release the glyphs
-        backwardDriveInches(3);
+        backwardDriveInches(4);
+
+        // Step 8: Flop back the glyph ramp
+        robot.flopBack();
     }
 }
