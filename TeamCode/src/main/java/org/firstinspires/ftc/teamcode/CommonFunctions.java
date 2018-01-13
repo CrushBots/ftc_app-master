@@ -60,6 +60,10 @@ public class CommonFunctions extends OpMode {
     }
 
     public void upAndFlop () {
+        robot.flopPulley.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.flopPulley.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         robot.flopPulley.setPower(0.3);
         robot.flopRamp.setPower(-0.1);
@@ -67,24 +71,31 @@ public class CommonFunctions extends OpMode {
         while (robot.flopPulley.getCurrentPosition() < 1250){
             telemetry.addData("Current Position", robot.flopPulley.getCurrentPosition());
             telemetry.update();
+
         }
-        robot.flopPulley.setPower(0.0);
-        robot.flopRamp.setPower(0.0);
 
         robot.flopPulleyUp = true;
+        robot.flopPulley.setPower(0.0);
 
+        robot.flopRamp.setPower(0.0);
         robot.flopForward();
     }
 
     public void flopAndDown () {
+
         robot.flopBack();
+
+        robot.flopPulley.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.flopPulley.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         robot.flopPulley.setPower(-0.1);
 
-        while (robot.flopPulley.getCurrentPosition() > 0){}
+        while (robot.flopPulley.getCurrentPosition() > -1300){
 
-        robot.flopPulley.setPower(0.0);
-
+        }
         robot.flopPulleyUp = false;
+        robot.flopPulley.setPower(0.0);
     }
+
 }

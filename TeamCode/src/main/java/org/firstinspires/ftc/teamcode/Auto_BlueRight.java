@@ -44,22 +44,24 @@ public class Auto_BlueRight extends Auto_CommonFunctions {
             case RIGHT:
                 forwardDriveInches(30);
             default:
-                forwardDriveInches(42);
+                forwardDriveInches(36);
         }
 
         // Step 4: Turn towards the cryptobox
-        turnRight(90);
+        turnLeft(100);
 
         // Step 5: Flop the Glyph upright
-        robot.flopForward();
+        forwardDriveInches(5);
 
         // Step 6: Push the Glyphs forward
-        forwardDriveInches(5);
+        robot.flopForward();
 
         // Step 7: Release the glyphs
         backwardDriveInches(4);
 
         // Step 8: Flop back the glyph ramp
         robot.flopBack();
-    }
+
+        forwardDriveInches(5);
+        backwardDriveInches(4);    }
 }

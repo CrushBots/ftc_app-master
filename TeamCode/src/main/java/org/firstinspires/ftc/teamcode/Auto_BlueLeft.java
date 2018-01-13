@@ -38,7 +38,7 @@ public class Auto_BlueLeft extends Auto_CommonFunctions {
         readPictograph();
 
         // Step 3: Move into front of the Cryptobox
-        forwardDriveInches(15);
+        forwardDriveInches(18);
 
         switch (robot.pictograph) {
             case LEFT:
@@ -52,16 +52,24 @@ public class Auto_BlueLeft extends Auto_CommonFunctions {
                 sleep(800);
         }
 
+        robot.setDrivePower(0.0,0.0,0.0,0.0);
+
+        // Step 4: Turn around
+        //turnRight(20);
+
+        // Step 4: Flop the Glyph upright
+        forwardDriveInches(7);
+
         // Step 4: Flop the Glyph upright
         robot.flopForward();
-
-        // Step 5: Push the Glyphs forward
-        forwardDriveInches(5);
 
         // Step 6: Release the glyphs
         backwardDriveInches(4);
 
         // Step 7: Flop back the glyph ramp
         robot.flopBack();
+
+        forwardDriveInches(5);
+        backwardDriveInches(4);
     }
 }

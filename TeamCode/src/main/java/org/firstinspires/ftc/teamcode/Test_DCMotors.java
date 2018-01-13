@@ -36,24 +36,48 @@ public class Test_DCMotors extends Auto_CommonFunctions {
         telemetry.update();
         sleep(2500);
 
+        telemetry.addData("Left front drive", "Before");
+        telemetry.addData("Current Position", robot.leftFront.getCurrentPosition());
+        telemetry.update();
         robot.setDrivePower(0.5,0.0,0.0,0.0);
-        telemetry.addData("", "Left front drive");
+        sleep(5000);
+        robot.setDrivePower(0.0,0.0,0.0,0.0);
+        telemetry.addData("Left front drive", "");
+        telemetry.addData("Current Position", robot.leftFront.getCurrentPosition());
         telemetry.update();
-        sleep(2500);
+        sleep(5000);
 
-        robot.setDrivePower(0.0,0.5,0.0,0.0);
         telemetry.addData("", "Right front drive");
+        telemetry.addData("Current Position", robot.rightFront.getCurrentPosition());
         telemetry.update();
-        sleep(2500);
+        robot.setDrivePower(0.0,0.5,0.0,0.0);
+        sleep(5000);
+        robot.setDrivePower(0.0,0.0,0.0,0.0);
+        telemetry.addData("", "Right front drive");
+        telemetry.addData("Current Position", robot.rightFront.getCurrentPosition());
+        telemetry.update();
+        sleep(5000);
 
-        robot.setDrivePower(0.0,0.0,0.5,0.0);
         telemetry.addData("", "Left back drive");
+        telemetry.addData("Current Position", robot.leftBack.getCurrentPosition());
         telemetry.update();
-        sleep(2500);
+        robot.setDrivePower(0.0,0.0,0.5,0.0);
+        sleep(5000);
+        robot.setDrivePower(0.0,0.0,0.0,0.0);
+        telemetry.addData("", "Left back drive");
+        telemetry.addData("Current Position", robot.leftBack.getCurrentPosition());
+        telemetry.update();
+        sleep(5000);
 
-        robot.setDrivePower(0.0,0.0,0.0,0.5);
         telemetry.addData("", "Right back drive");
+        telemetry.addData("Current Position", robot.rightBack.getCurrentPosition());
         telemetry.update();
-        sleep(2500);
+        robot.setDrivePower(0.0,0.0,0.0,0.5);
+        sleep(5000);
+        robot.setDrivePower(0.0,0.0,0.0,0.0);
+        telemetry.addData("", "Right back drive");
+        telemetry.addData("Current Position", robot.rightBack.getCurrentPosition());
+        telemetry.update();
+        sleep(1000);
     }
 }

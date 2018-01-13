@@ -105,15 +105,11 @@ public class DriverTeleOp extends CommonFunctions {
         if (gamepad2.dpad_right) {
             robot.relicHandServo.setPosition(robot.RELIC_HAND_SERVO_CLOSE_POS);
         }
-        if (gamepad2.left_bumper) {
-            robot.relicArm.setPower(0.5);
-        } else {
-            robot.relicArm.setPower(0.0);
+        if (!robot.relicArmOut && gamepad2.left_bumper) {
+            robot.relicArmOut();
         }
-        if (gamepad2.right_bumper) {
-            robot.relicArm.setPower(-0.3);
-        } else {
-            robot.relicArm.setPower(0.0);
+        if (robot.relicArmOut && gamepad2.right_bumper) {
+            robot.relicArmIn();
         }
 
         /******************************************************************
