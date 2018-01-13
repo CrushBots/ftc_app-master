@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -29,13 +30,12 @@ import static java.lang.Thread.sleep;
     public DcMotor relicArm = null;
     public DcMotor flopRamp = null;
     public DcMotor flopPulley = null;
+    public DcMotor intakeRollers = null;
 
     public Servo relicWristServo = null;
     public Servo relicHandServo = null;
     public Servo jewelArmUpDownServo = null;
     public Servo jewelArmLeftRightServo = null;
-    public Servo leftIntakeServo = null;
-    public Servo rightIntakeServo = null;
 
     public ColorSensor jewelFarSensor;
     public ColorSensor jewelNearSensor;
@@ -44,6 +44,7 @@ import static java.lang.Thread.sleep;
 
     public boolean flopPulleyUp;
     public boolean flopRampUp;
+    public boolean relicArmOut;
 
     static final double JEWEL_ARM_SERVO_START_POS = 0.0;
     static final double JEWEL_ARM_SERVO_UP_POS = 0.2;
@@ -53,14 +54,8 @@ import static java.lang.Thread.sleep;
     static final double JEWEL_ARM_SERVO_MIDDLE_POS = 0.6;
     static final double JEWEL_ARM_SERVO_RIGHT_POS = 0.8;
 
-    static final double RIGHT_INTAKE_SERVO_ON = 0.0;
-    static final double RIGHT_INTAKE_SERVO_OFF = 0.5;
-
-    static final double LEFT_INTAKE_SERVO_ON = 1.0;
-    static final double LEFT_INTAKE_SERVO_OFF = 0.5;
-
     static final double RELIC_WRIST_SERVO_UP_POS = 1.0;
-    static final double RELIC_WRIST_SERVO_DOWN_POS = 0.2;
+    static final double RELIC_WRIST_SERVO_DOWN_POS = 0.0;
 
     static final double RELIC_HAND_SERVO_OPEN_POS = 0.5;
     static final double RELIC_HAND_SERVO_CLOSE_POS = 0.0;
@@ -93,6 +88,7 @@ import static java.lang.Thread.sleep;
         relicArm = hwMap.dcMotor.get("relicArm");
         flopRamp = hwMap.dcMotor.get("flipRamp");
         flopPulley = hwMap.dcMotor.get("flopPulley");
+        intakeRollers = hwMap.dcMotor.get("intakeRollers");
 
         // Set the direction of the motors to FORWARD or REVERSE
         leftFront.setDirection(DcMotor.Direction.REVERSE);
@@ -102,6 +98,7 @@ import static java.lang.Thread.sleep;
         relicArm.setDirection(DcMotor.Direction.FORWARD);
         flopRamp.setDirection(DcMotor.Direction.FORWARD);
         flopPulley.setDirection(DcMotor.Direction.FORWARD);
+        intakeRollers.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to zero power
         leftFront.setPower(0);
@@ -111,17 +108,24 @@ import static java.lang.Thread.sleep;
         relicArm.setPower(0);
         flopRamp.setPower(0);
         flopPulley.setPower(0);
+        intakeRollers.setPower(0);
 
         // Set all motors to RUN_USING_ENCODER or RUN_WITHOUT_ENCODER.
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        relicArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         relicArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         flopPulley.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         flopPulley.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intakeRollers.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Set all Zero Power Behavior - FLOAT or BREAK
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -131,6 +135,7 @@ import static java.lang.Thread.sleep;
         relicArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         flopRamp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         flopPulley.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeRollers.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         /**
          *  Define and set start position on Servos
@@ -138,13 +143,9 @@ import static java.lang.Thread.sleep;
         jewelArmUpDownServo = hwMap.servo.get("jewelArmUpDown");
 
         jewelArmLeftRightServo = hwMap.servo.get("jewelArmLeftRight");
-        jewelArmLeftRightServo.setPosition(JEWEL_ARM_SERVO_MIDDLE_POS);
 
         relicWristServo = hwMap.servo.get("relicWrist");
         relicHandServo = hwMap.servo.get("relicHand");
-
-        leftIntakeServo = hwMap.servo.get("leftIntakeServo");
-        rightIntakeServo = hwMap.servo.get("rightIntakeServo");
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
@@ -226,38 +227,75 @@ import static java.lang.Thread.sleep;
     }
 
     public void turnOnIntake (){
-        rightIntakeServo.setPosition(RIGHT_INTAKE_SERVO_ON);
-        leftIntakeServo.setPosition(LEFT_INTAKE_SERVO_ON);
+        intakeRollers.setPower(0.5);
     }
     public void turnOffIntake (){
-        rightIntakeServo.setPosition(RIGHT_INTAKE_SERVO_OFF);
-        leftIntakeServo.setPosition(LEFT_INTAKE_SERVO_OFF);
+        intakeRollers.setPower(0.0);
     }
+
 
     public void flopBack (){
 
+        flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         flopRamp.setPower(0.15);
 
-        while (flopRamp.getCurrentPosition() < 225){}
+        while (flopRamp.getCurrentPosition() < 225){
+
+        }
 
         flopRampUp = false;
-
         flopRamp.setPower(0.0);
     }
+
+
 
     public void flopForward (){
 
+        flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         flopRamp.setPower(-0.3);
 
-        while (flopRamp.getCurrentPosition() > 0){}
+        while (flopRamp.getCurrentPosition() > -250){
+
+        }
 
         flopRampUp = true;
-
         flopRamp.setPower(0.0);
+
     }
 
+    public void relicArmOut (){
 
+        relicArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        relicArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        relicArm.setPower(0.4);
+
+        while (relicArm.getCurrentPosition() < 1000){
+
+        }
+
+        relicArmOut = true;
+        relicArm.setPower(0.0);
+    }
+
+    public void relicArmIn (){
+
+        relicArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        relicArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        relicArm.setPower(-0.4);
+
+        while (relicArm.getCurrentPosition() > -1000){
+
+        }
+
+        relicArmOut = false;
+        relicArm.setPower(0.0);
+    }
 
 
     /***

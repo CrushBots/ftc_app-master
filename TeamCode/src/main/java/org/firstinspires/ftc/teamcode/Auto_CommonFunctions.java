@@ -46,7 +46,12 @@ public class Auto_CommonFunctions extends LinearOpMode {
 
     public void knockJewel(int alliance) {
 
+        moveServo(robot.jewelArmUpDownServo,JEWEL_ARM_SERVO_UP_POS);
+        telemetry.addData("Servo is ", "UP");
+        telemetry.update();
         moveServo(robot.jewelArmLeftRightServo,JEWEL_ARM_SERVO_MIDDLE_POS);
+        telemetry.addData("Servo is ", "MIDDLE");
+        telemetry.update();
         moveServo(robot.jewelArmUpDownServo,JEWEL_ARM_SERVO_DOWN_POS);
         telemetry.addData("Servo is ", "DOWN");
         telemetry.update();
@@ -334,6 +339,8 @@ public class Auto_CommonFunctions extends LinearOpMode {
              * UNKNOWN, LEFT, CENTER, and RIGHT.
              */
             robot.pictograph = RelicRecoveryVuMark.from(robot.relicTemplate);
+            telemetry.addData("I see", robot.pictograph);
+            telemetry.update();
         }
 
         robot.relicTrackables.deactivate();
