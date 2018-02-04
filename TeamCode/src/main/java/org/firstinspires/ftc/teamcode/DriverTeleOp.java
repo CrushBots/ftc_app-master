@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import static java.lang.Thread.sleep;
 
@@ -19,11 +18,11 @@ public class DriverTeleOp extends CommonFunctions {
     /*
     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
     */
-    //@Override
-    //public void init_loop() {
-    //   robot.jewelArmUpDownServo.setPosition(robot.JEWEL_ARM_SERVO_UP_POS);
-    //  robot.jewelArmLeftRightServo.setPosition(robot.JEWEL_ARM_SERVO_MIDDLE_POS);
-    //}
+//    @Override
+  //  public void init_loop() {
+    //    robot.jewelArmUpDownServo.setPosition(robot.JEWEL_ARM_SERVO_UP_POS);
+      //robot.jewelArmLeftRightServo.setPosition(robot.JEWEL_ARM_SERVO_MIDDLE_POS);
+  //  }
 
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
@@ -31,6 +30,9 @@ public class DriverTeleOp extends CommonFunctions {
     @Override
     public void loop() {
         telemetry.addData("Status", "Running: " + runtime.toString());
+
+        robot.jewelArmUpDownServo.setPosition(robot.JEWEL_ARM_SERVO_UP_POS);
+        robot.jewelArmLeftRightServo.setPosition(robot.JEWEL_ARM_SERVO_MIDDLE_POS);
 
         double drive;
         double strafe;
@@ -40,9 +42,6 @@ public class DriverTeleOp extends CommonFunctions {
         double leftBackPower;
         double rightBackPower;
         double speedMultiple = 1.0;
-
-        robot.jewelArmUpDownServo.setPosition(robot.JEWEL_ARM_SERVO_UP_POS);
-        robot.jewelArmLeftRightServo.setPosition(robot.JEWEL_ARM_SERVO_MIDDLE_POS);
 
         /******************************************************************
          * Figure out if the speed is whole or half
@@ -71,24 +70,38 @@ public class DriverTeleOp extends CommonFunctions {
         /******************************************************************
          * FLOP RAMP
          ******************************************************************/
-        if (!robot.flopPulleyUp && !robot.flopRampUp && gamepad2.b) {
-            upAndFlop();
-        }
-        if (robot.flopPulleyUp && robot.flopRampUp && gamepad2.a) {
-            flopAndDown();
+        if (!robot.flopPulleyUp && !robot.flopPulleyMovingUp && !robot.flopRampForward && gamepad2.b) {
+            rampUpStart();
         }
 
-        telemetry.addData("FlopRampUp: ", robot.flopRampUp);
-        telemetry.addData("Left Stick Y: ", gamepad2.left_stick_y);
-        telemetry.update();
-
-        if (!robot.flopRampUp && gamepad2.left_stick_y < -0.5) {
-            robot.flopForward();
+        if (robot.flopPulleyMovingUp ) {
+            rampUpEnd();
         }
 
-        if (robot.flopRampUp && gamepad2.left_stick_y > 0.5) {
-            robot.flopBack();
+        if (robot.flopPulleyUp&& !robot.flopPulleyMovingDown && robot.flopRampForward && gamepad2.a) {
+            rampDownStart();
         }
+        if (robot.flopPulleyMovingDown){
+            rampDownEnd();
+        }
+
+        if (!robot.flopRampForward && !robot.flopRampMovingForward && gamepad2.left_stick_y < -0.5) {
+            flopForwardStart();
+            //startMotorUsingEncoder();
+        }
+
+        if (robot.flopRampMovingForward) {
+            flopForwardEnd();
+        }
+
+        if (robot.flopRampForward && !robot.flopRampMovingBack && gamepad2.left_stick_y > 0.5) {
+            flopBackStart();
+        }
+
+        if (robot.flopRampMovingBack){
+            flopBackEnd();
+        }
+
 
         /******************************************************************
          * RELIC
@@ -105,11 +118,17 @@ public class DriverTeleOp extends CommonFunctions {
         if (gamepad2.dpad_right) {
             robot.relicHandServo.setPosition(robot.RELIC_HAND_SERVO_CLOSE_POS);
         }
-        if (!robot.relicArmOut && gamepad2.left_bumper) {
-            robot.relicArmOut();
+        if (!robot.relicArmOut && !robot.relicArmMovingOut &&  gamepad2.left_bumper) {
+            relicArmOutStart();
         }
-        if (robot.relicArmOut && gamepad2.right_bumper) {
-            robot.relicArmIn();
+        if (robot.relicArmMovingOut) {
+            relicArmOutEnd();
+        }
+        if (robot.relicArmOut && !robot.relicArmMovingIn && gamepad2.right_bumper) {
+            relicArmInStart();
+        }
+        if (robot.relicArmMovingIn){
+            relicArmOutEnd();
         }
 
         /******************************************************************
@@ -121,6 +140,8 @@ public class DriverTeleOp extends CommonFunctions {
         if (gamepad2.x) {
             robot.turnOffIntake();
         }
+        if (gamepad1.b) {
+            robot.backwardsIntake();
+        }
     }
 }
-

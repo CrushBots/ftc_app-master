@@ -4,7 +4,6 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -43,8 +42,14 @@ import static java.lang.Thread.sleep;
     public BNO055IMU gyro = null;
 
     public boolean flopPulleyUp;
-    public boolean flopRampUp;
+    public boolean flopPulleyMovingUp;
+    public boolean flopPulleyMovingDown;
+    public boolean flopRampForward;
+    public boolean flopRampMovingForward;
+    public boolean flopRampMovingBack;
     public boolean relicArmOut;
+    public boolean relicArmMovingOut;
+    public boolean relicArmMovingIn;
 
     static final double JEWEL_ARM_SERVO_START_POS = 0.0;
     static final double JEWEL_ARM_SERVO_UP_POS = 0.2;
@@ -55,7 +60,7 @@ import static java.lang.Thread.sleep;
     static final double JEWEL_ARM_SERVO_RIGHT_POS = 0.8;
 
     static final double RELIC_WRIST_SERVO_UP_POS = 1.0;
-    static final double RELIC_WRIST_SERVO_DOWN_POS = 0.0;
+    static final double RELIC_WRIST_SERVO_DOWN_POS = 0.2;
 
     static final double RELIC_HAND_SERVO_OPEN_POS = 0.5;
     static final double RELIC_HAND_SERVO_CLOSE_POS = 0.0;
@@ -81,7 +86,7 @@ import static java.lang.Thread.sleep;
         /**
          *  Define and Initialize Motors
          */
-         leftFront = hwMap.dcMotor.get("leftFront");
+        leftFront = hwMap.dcMotor.get("leftFront");
         leftBack = hwMap.dcMotor.get("leftBack");
         rightFront = hwMap.dcMotor.get("rightFront");
         rightBack = hwMap.dcMotor.get("rightBack");
@@ -227,99 +232,12 @@ import static java.lang.Thread.sleep;
     }
 
     public void turnOnIntake (){
-        intakeRollers.setPower(0.5);
+        intakeRollers.setPower(0.3);
     }
     public void turnOffIntake (){
         intakeRollers.setPower(0.0);
     }
+    public void backwardsIntake (){intakeRollers.setPower(-0.5);}
 
 
-    public void flopBack (){
-
-        flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        flopRamp.setPower(0.15);
-
-        while (flopRamp.getCurrentPosition() < 225){
-
-        }
-
-        flopRampUp = false;
-        flopRamp.setPower(0.0);
-    }
-
-
-
-    public void flopForward (){
-
-        flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        flopRamp.setPower(-0.3);
-
-        while (flopRamp.getCurrentPosition() > -250){
-
-        }
-
-        flopRampUp = true;
-        flopRamp.setPower(0.0);
-
-    }
-
-    public void relicArmOut (){
-
-        relicArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        relicArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        relicArm.setPower(0.4);
-
-        while (relicArm.getCurrentPosition() < 1000){
-
-        }
-
-        relicArmOut = true;
-        relicArm.setPower(0.0);
-    }
-
-    public void relicArmIn (){
-
-        relicArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        relicArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        relicArm.setPower(-0.4);
-
-        while (relicArm.getCurrentPosition() > -1000){
-
-        }
-
-        relicArmOut = false;
-        relicArm.setPower(0.0);
-    }
-
-
-    /***
-     *
-     * waitForTick implements a periodic delay. However, this acts like a metronome with a regular
-     * periodic tick.  This is used to compensate for varying processing times for each cycle.
-     * The function looks at the elapsed cycle time, and sleeps for the remaining time interval.
-     *
-     //* @param periodMs  Length of wait cycle in mSec.
-     */
-    //public void waitForTick(long periodMs) {
-
-        //long  remaining = periodMs - (long)period.milliseconds();
-
-        // sleep for the remaining portion of the regular cycle period.
-        //if (remaining > 0) {
-            //try {
-                //sleep(remaining);
-            //} catch (InterruptedException e) {
-                //Thread.currentThread().interrupt();
-            //}
-        //}
-
-        // Reset the cycle clock for the next pass.
-        //period.reset();
-    //}
 }

@@ -233,7 +233,6 @@ public class Auto_CommonFunctions extends LinearOpMode {
             telemetry.addData("Target:", targetHeading);
             telemetry.update();
         }
-
         robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
         sleep(250);
     }
