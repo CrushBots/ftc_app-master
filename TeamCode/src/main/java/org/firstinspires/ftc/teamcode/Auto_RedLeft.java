@@ -54,13 +54,13 @@ public class Auto_RedLeft extends Auto_CommonFunctions {
         forwardDriveInches(5);
 
         // Step 6: Push the Glyphs forward
-        //robot.flopForward();
+        robot.flopForward();
 
         // Step 7: Release the glyphs
         backwardDriveInches(4);
 
         // Step 8: Flop back the glyph ramp
-        //robot.flopBack();
+        robot.flopBack();
 
         forwardDriveInches(5);
         backwardDriveInches(4);

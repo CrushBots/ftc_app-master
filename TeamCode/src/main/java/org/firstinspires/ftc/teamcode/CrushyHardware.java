@@ -13,8 +13,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-import static java.lang.Thread.sleep;
-
  /**
   * Created by CrushBots for the 2017-2018 FTC season
   */
@@ -42,14 +40,8 @@ import static java.lang.Thread.sleep;
     public BNO055IMU gyro = null;
 
     public boolean flopPulleyUp;
-    public boolean flopPulleyMovingUp;
-    public boolean flopPulleyMovingDown;
     public boolean flopRampForward;
-    public boolean flopRampMovingForward;
-    public boolean flopRampMovingBack;
     public boolean relicArmOut;
-    public boolean relicArmMovingOut;
-    public boolean relicArmMovingIn;
 
     static final double JEWEL_ARM_SERVO_START_POS = 0.0;
     static final double JEWEL_ARM_SERVO_UP_POS = 0.2;
@@ -59,8 +51,9 @@ import static java.lang.Thread.sleep;
     static final double JEWEL_ARM_SERVO_MIDDLE_POS = 0.6;
     static final double JEWEL_ARM_SERVO_RIGHT_POS = 0.8;
 
-    static final double RELIC_WRIST_SERVO_UP_POS = 1.0;
-    static final double RELIC_WRIST_SERVO_DOWN_POS = 0.2;
+    static final double RELIC_WRIST_SERVO_UP_POS = 0.9;
+    static final double RELIC_WRIST_SERVO_DOWN_POS = 0.05
+            ;
 
     static final double RELIC_HAND_SERVO_OPEN_POS = 0.5;
     static final double RELIC_HAND_SERVO_CLOSE_POS = 0.0;
@@ -83,9 +76,9 @@ import static java.lang.Thread.sleep;
         // Save reference to Hardware map
          hwMap = ahwMap;
 
-        /**
+        /**********************************************************************************
          *  Define and Initialize Motors
-         */
+         **********************************************************************************/
         leftFront = hwMap.dcMotor.get("leftFront");
         leftBack = hwMap.dcMotor.get("leftBack");
         rightFront = hwMap.dcMotor.get("rightFront");
@@ -142,16 +135,19 @@ import static java.lang.Thread.sleep;
         flopPulley.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeRollers.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        /**
-         *  Define and set start position on Servos
-         */
+
+        /**********************************************************************************
+         *  Define Servos
+         **********************************************************************************/
         jewelArmUpDownServo = hwMap.servo.get("jewelArmUpDown");
-
         jewelArmLeftRightServo = hwMap.servo.get("jewelArmLeftRight");
-
         relicWristServo = hwMap.servo.get("relicWrist");
         relicHandServo = hwMap.servo.get("relicHand");
 
+
+        /**********************************************************************************
+         *  Define and setup Gyro
+         **********************************************************************************/
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
         // provide positional information.
@@ -239,5 +235,32 @@ import static java.lang.Thread.sleep;
     }
     public void backwardsIntake (){intakeRollers.setPower(-0.5);}
 
+    public void flopBack (){
 
+        flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        flopRamp.setPower(0.15);
+
+        while (flopRamp.getCurrentPosition() < 225){
+        }
+
+        flopRampForward = false;
+        flopRamp.setPower(0.0);
+
+    }
+
+    public void flopForward (){
+
+        flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        flopRamp.setPower(-0.3);
+
+        while (flopRamp.getCurrentPosition() > -250){
+        }
+
+        flopRampForward = true;
+        flopRamp.setPower(0.0);
+    }
 }

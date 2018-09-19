@@ -59,117 +59,8 @@ public class CommonFunctions extends OpMode {
     public void stop() {
     }
 
-    public void rampUpStart () {
-        robot.flopPulley.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.flopPulley.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        robot.flopPulley.setPower(0.5);
-        robot.flopPulleyMovingUp = true;
-
-    }
-    public void rampUpEnd () {
-
-        while (!(robot.flopPulley.getCurrentPosition() < 1250)){
-            robot.flopPulleyUp = true;
-            robot.flopPulley.setPower(0.0);
-            robot.flopPulleyMovingUp = false;
-        }
-
-    }
-
-    public void rampDownStart () {
-        robot.flopPulley.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.flopPulley.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        robot.flopPulley.setPower(-0.1);
-        robot.flopPulleyMovingDown = true;
-    }
-
-    public void rampDownEnd () {
-
-        while (!(robot.flopPulley.getCurrentPosition() > -1300)) {
-            robot.flopPulleyUp = false;
-            robot.flopPulley.setPower(0.0);
-            robot.flopPulleyMovingDown = false;
-        }
-    }
-
-
-
-    public void flopBackStart (){
-
-        robot.flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        robot.flopRamp.setPower(0.15);
-        robot.flopRampMovingBack = true;
-    }
-
-    public void flopBackEnd (){
-
-        while (!(robot.flopRamp.getCurrentPosition() < 225)){
-            robot.flopRampForward = false;
-            robot.flopRamp.setPower(0.0);
-            robot.flopRampMovingBack = false;
-        }
-    }
-
-    public void flopForwardStart(){
-
-        robot.flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        robot.flopRamp.setPower(-0.3);
-        robot.flopRampMovingForward = true;
-    }
-
-    public void flopForwardEnd (){
-
-        if (!(robot.flopRamp.getCurrentPosition() > -250)){
-            robot.flopRampForward = true;
-            robot.flopRamp.setPower(0.0);
-            robot.flopRampMovingForward = false;
-        }
-    }
-
-    public void relicArmOutStart (){
-
-        robot.relicArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.relicArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        robot.relicArm.setPower(1.0);
-        robot.relicArmMovingOut = true;
-    }
-
-    public void relicArmOutEnd (){
-
-        if (!(robot.relicArm.getCurrentPosition() < 12500)){
-            robot.relicArmOut = true;
-            robot.relicArm.setPower(0.0);
-            robot.relicArmMovingOut = false;
-        }
-    }
-
-    public void relicArmInStart (){
-
-        robot.relicArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.relicArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        robot.relicArm.setPower(-0.5);
-        robot.relicArmMovingIn = true;
-    }
-
-    public void relicArmInEnd (){
-
-        if (!(robot.relicArm.getCurrentPosition() > -12500)){
-            robot.relicArmOut = false;
-            robot.relicArm.setPower(0.0);
-            robot.relicArmMovingIn = false;
-        }
-    }
-
-
-    public void startMotorUsingEncoder (DcMotor motor, float power){
+    public void startMotorUsingEncoder (DcMotor motor, double power){
 
         if (motor.getPower() == 0.0){
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -179,24 +70,98 @@ public class CommonFunctions extends OpMode {
         }
     }
 
-    public void stopMotorAtPosition (DcMotor motor, int stopPosition){
+    public boolean stopMotorAtPosition (DcMotor motor, int stopPosition, boolean positionBoolean) {
 
         boolean stopMotor = false;
 
-        if (stopPosition > 0) {
-            if (motor.getCurrentPosition() >= stopPosition){
-                stopMotor = true;
+        if (motor.getPower() > 0.0) {
+            if (stopPosition > 0) {
+                if (motor.getCurrentPosition() >= stopPosition) {
+                    stopMotor = true;
+                }
             }
         }
-        else {
-            if (motor.getCurrentPosition() <= stopPosition){
-                stopMotor = true;
+        if (motor.getPower() < 0.0) {
+            if (stopPosition < 0) {
+                if (motor.getCurrentPosition() <= stopPosition) {
+                    stopMotor = true;
+                }
             }
         }
 
         if (stopMotor) {
-            robot.relicArmOut = false;
-            motor.setPower(0.0);
+                positionBoolean = !(positionBoolean);
+                motor.setPower(0.0);
         }
+
+        return positionBoolean;
     }
+
+    public boolean stopPulleyMotor (boolean positionBoolean) {
+
+        boolean stopMotor = false;
+
+        if (robot.flopPulley.getPower() > 0.0) {
+            if (1250 > 0) {
+                if (robot.flopPulley.getCurrentPosition() >= 1250) {
+                    stopMotor = true;
+                }
+            }
+        }
+        if (robot.flopPulley.getPower() < 0.0) {
+            if (1250 < 0) {
+                if (robot.flopPulley.getCurrentPosition() <= 1250) {
+                    stopMotor = true;
+                }
+            }
+        }
+
+        if (stopMotor) {
+            positionBoolean = !(positionBoolean);
+            robot.flopPulley.setPower(0.0);
+            robot.flopRamp.setPower(0.0);
+        }
+
+        return positionBoolean;
+
+    }
+
+    public void upAndFlop () {
+
+        robot.flopPulley.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.flopPulley.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.flopRamp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.flopRamp.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        robot.flopPulley.setPower(0.3);
+        robot.flopRamp.setPower(-0.1);
+
+        while (robot.flopPulley.getCurrentPosition() < 1250){
+            telemetry.addData("Current Position", robot.flopPulley.getCurrentPosition());
+            telemetry.update();
+        }
+
+        robot.flopPulleyUp = true;
+        robot.flopPulley.setPower(0.0);
+
+        robot.flopRamp.setPower(0.0);
+        robot.flopForward();
+    }
+
+    public void flopAndDown () {
+
+        robot.flopBack();
+
+        robot.flopPulley.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.flopPulley.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.flopPulley.setPower(-0.1);
+
+        while (robot.flopPulley.getCurrentPosition() > -1300){
+        }
+
+        robot.flopPulleyUp = false;
+        robot.flopPulley.setPower(0.0);
+
+    }
+
 }

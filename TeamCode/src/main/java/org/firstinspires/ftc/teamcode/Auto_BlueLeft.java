@@ -58,16 +58,16 @@ public class Auto_BlueLeft extends Auto_CommonFunctions {
         //turnRight(20);
 
         // Step 4: Flop the Glyph upright
-        forwardDriveInches(7);
+        forwardDriveInches(5);
 
         // Step 4: Flop the Glyph upright
-        //robot.flopForward();
+        robot.flopForward();
 
         // Step 6: Release the glyphs
         backwardDriveInches(4);
 
         // Step 7: Flop back the glyph ramp
-        //robot.flopBack();
+        robot.flopBack();
 
         forwardDriveInches(5);
         backwardDriveInches(4);

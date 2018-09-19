@@ -116,6 +116,8 @@ public class Auto_CommonFunctions extends LinearOpMode {
     public void forwardDriveInches(int inches) {
         int targetTicks = 0;
 
+        sleep(3000);
+
         // Ticks per revolution is 1220
         targetTicks = -120 * inches;
 

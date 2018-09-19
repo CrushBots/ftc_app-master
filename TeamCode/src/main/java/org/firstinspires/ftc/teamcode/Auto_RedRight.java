@@ -57,16 +57,17 @@ public class Auto_RedRight extends Auto_CommonFunctions {
         turnLeft(180);
 
         // Step 4: Flop the Glyph upright
-        forwardDriveInches(5);
+        robot.flopForward();
 
         // Step 5: Push the Glyphs forward
-        //robot.flopForward();
+        robot.flopForward();
+        forwardDriveInches(5);
 
         // Step 6: Release the glyphs
         backwardDriveInches(4);
 
         // Step 7: Flop back the glyph ramp
-        //robot.flopBack();
+        robot.flopBack();
 
         forwardDriveInches(5);
         backwardDriveInches(4);
