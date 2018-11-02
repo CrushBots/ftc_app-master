@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * Created by CrushBots for the 2017-2018 FTC season
+ * Created by CrushBots for the 2018-2019 FTC season
  */
 
 @Autonomous(name="Test Servo Positions", group="Test")

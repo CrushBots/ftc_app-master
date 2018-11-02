@@ -52,5 +52,58 @@ public class Test_DCMotors extends Auto_SeasonFunctions {
         telemetry.update();
         sleep(5000);
 
+        //
+        //  Test that the Left Back motor is set up correctly
+        //
+        robot.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        while (opModeIsActive() && (robot.leftBack.getCurrentPosition() != 0)) {
+            telemetry.addData("Left Back", "Waiting on encoder");
+            telemetry.update();
+        }
+        telemetry.addData("Left Back", "Running");
+        telemetry.update();
+        robot.setDrivePower(0.0, 0.0, 0.5, 0.0);
+        sleep(5000);
+        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
+        telemetry.addData("Left Back Encoder Value", robot.leftBack.getCurrentPosition());
+        telemetry.update();
+        sleep(5000);
+
+        //
+        //  Test that the Right Front motor is set up correctly
+        //
+        robot.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        while (opModeIsActive() && (robot.rightFront.getCurrentPosition() != 0)) {
+            telemetry.addData("Right Front", "Waiting on encoder");
+            telemetry.update();
+        }
+        telemetry.addData("Right Front", "Running");
+        telemetry.update();
+        robot.setDrivePower(0.0, 0.5, 0.0, 0.0);
+        sleep(5000);
+        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
+        telemetry.addData("Right Front Encoder Value", robot.rightFront.getCurrentPosition());
+        telemetry.update();
+        sleep(5000);
+
+        //
+        //  Test that the Right Back motor is set up correctly
+        //
+        robot.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        while (opModeIsActive() && (robot.rightBack.getCurrentPosition() != 0)) {
+            telemetry.addData("Right Back", "Waiting on encoder");
+            telemetry.update();
+        }
+        telemetry.addData("Right Back", "Running");
+        telemetry.update();
+        robot.setDrivePower(0.0, 0.0, 0.0, 0.5);
+        sleep(5000);
+        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
+        telemetry.addData("Right Back Encoder Value", robot.rightBack.getCurrentPosition());
+        telemetry.update();
+        sleep(5000);
     }
 }

@@ -22,7 +22,7 @@ public class Auto_SeasonFunctions extends Auto_CommonFunctions {
         robot.hangMotor.setPower(0.0);
     }
 
-    public void downHangMotor() {
+    public void RaiseRobotShrinkHang() {
         robot.hangMotor.setPower(-1.0);
         while (opModeIsActive() && (robot.downTouchSensor.getState())){
             telemetry.addData("Status", "Raising Robot");
@@ -30,9 +30,6 @@ public class Auto_SeasonFunctions extends Auto_CommonFunctions {
         }
         robot.hangMotor.setPower(0.0);
     }
-
-
-
 
     public boolean scanForGold(Servo localServo, double targetPosition){
 

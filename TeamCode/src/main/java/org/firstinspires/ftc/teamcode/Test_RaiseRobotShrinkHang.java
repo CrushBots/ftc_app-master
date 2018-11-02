@@ -33,7 +33,7 @@ public class Test_RaiseRobotShrinkHang extends Auto_SeasonFunctions {
 
         telemetry.addData("Raise Robot Shrink Hang", "Running");
         telemetry.update();
-        downHangMotor();
+        RaiseRobotShrinkHang();
         sleep(1000);
    }
 }
