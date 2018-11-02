@@ -1,15 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Created by CrushBots for the 2017-2018 FTC season
  */
 
-@Autonomous(name="Test Relic Hand Wrist", group="Test")
+@Autonomous(name="Test DC Motors Distance ", group="Test")
 //@Disabled
-public class Test_RelicHandWrist extends Auto_CommonFunctions {
+public class Test_DCMotorsDistance extends Auto_SeasonFunctions {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -31,31 +32,15 @@ public class Test_RelicHandWrist extends Auto_CommonFunctions {
         while (!(isStarted() || isStopRequested())) {
         }
 
-        // Test 1: Relic wrist
-        telemetry.addData("Testing ", "Relic");
+        telemetry.addData("Testing ", "Drive motors");
         telemetry.update();
         sleep(2500);
 
-        //moveServo(robot.relicHandServo, robot.RELIC_HAND_SERVO_OPEN_POS);
-        telemetry.addData("", "Hand open");
+        telemetry.addData("All Motors", "Running");
         telemetry.update();
-        sleep(2500);
 
-        //moveServo(robot.relicHandServo, robot.RELIC_HAND_SERVO_CLOSE_POS);
-        telemetry.addData("", "Hand close");
-        telemetry.update();
-        sleep(2500);
-
-        //moveServo(robot.relicWristServo, robot.RELIC_WRIST_SERVO_UP_POS);
-        telemetry.addData("", "Up position");
-        telemetry.update();
-        sleep(2500);
-
-        //moveServo(robot.relicWristServo, robot.RELIC_WRIST_SERVO_DOWN_POS);
-        telemetry.addData("", "Down position");
-        telemetry.update();
-        sleep(2500);
-
-
-    }
+        robot.leftFront.setPower(0.9);
+        robot.leftBack.setPower(0.9);
+        sleep(300000000);
+   }
 }

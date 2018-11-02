@@ -4,12 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * Created by CrushBots for the 2017-2018 FTC season
+ * Created by CrushBots for the 2018-2019 FTC season
  */
 
-@Autonomous(name="Test Intake", group="Test")
+@Autonomous(name="Test Raise Robot Shrink Hang", group="Test")
 //@Disabled
-public class Test_Intake extends Auto_CommonFunctions {
+public class Test_RaiseRobotShrinkHang extends Auto_SeasonFunctions {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -31,17 +31,9 @@ public class Test_Intake extends Auto_CommonFunctions {
         while (!(isStarted() || isStopRequested())) {
         }
 
-        // Test 1: Turn on Intake
-        telemetry.addData("Testing ", "Intake motors");
+        telemetry.addData("Raise Robot Shrink Hang", "Running");
         telemetry.update();
-        sleep(2500);
-
-        robot.turnOnIntake();
-        telemetry.addData("", "Running Intake");
-        telemetry.update();
-
-        while (opModeIsActive()) {
-
-        }
-    }
+        downHangMotor();
+        sleep(1000);
+   }
 }

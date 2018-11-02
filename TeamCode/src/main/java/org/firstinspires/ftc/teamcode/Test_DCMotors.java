@@ -1,15 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-/**
- * Created by CrushBots for the 2017-2018 FTC season
- */
+/* Created by CrushBots for the 2017-2018 FTC season*/
 
 @Autonomous(name="Test DC Motors ", group="Test")
 //@Disabled
-public class Test_DCMotors extends Auto_CommonFunctions {
+public class Test_DCMotors extends Auto_SeasonFunctions {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -31,53 +30,27 @@ public class Test_DCMotors extends Auto_CommonFunctions {
         while (!(isStarted() || isStopRequested())) {
         }
 
-        // Test 1: Drive motors
         telemetry.addData("Testing ", "Drive motors");
         telemetry.update();
         sleep(2500);
 
-        telemetry.addData("Left front drive", "Before");
-        telemetry.addData("Current Position", robot.leftFront.getCurrentPosition());
+        //
+        //  Test that the Left Front motor is set up correctly
+        //
+        robot.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        while (opModeIsActive() && (robot.leftFront.getCurrentPosition() != 0)) {
+            telemetry.addData("Left Front", "Waiting on encoder");
+            telemetry.update();
+        }
+        telemetry.addData("Left Front", "Running");
         telemetry.update();
-        robot.setDrivePower(0.5,0.0,0.0,0.0);
+        robot.setDrivePower(0.5, 0.0, 0.0, 0.0);
         sleep(5000);
-        robot.setDrivePower(0.0,0.0,0.0,0.0);
-        telemetry.addData("Left front drive", "");
-        telemetry.addData("Current Position", robot.leftFront.getCurrentPosition());
-        telemetry.update();
-        sleep(5000);
-
-        telemetry.addData("", "Right front drive");
-        telemetry.addData("Current Position", robot.rightFront.getCurrentPosition());
-        telemetry.update();
-        robot.setDrivePower(0.0,0.5,0.0,0.0);
-        sleep(5000);
-        robot.setDrivePower(0.0,0.0,0.0,0.0);
-        telemetry.addData("", "Right front drive");
-        telemetry.addData("Current Position", robot.rightFront.getCurrentPosition());
+        robot.setDrivePower(0.0, 0.0, 0.0, 0.0);
+        telemetry.addData("Left Front Encoder Value", robot.leftFront.getCurrentPosition());
         telemetry.update();
         sleep(5000);
 
-        telemetry.addData("", "Left back drive");
-        telemetry.addData("Current Position", robot.leftBack.getCurrentPosition());
-        telemetry.update();
-        robot.setDrivePower(0.0,0.0,0.5,0.0);
-        sleep(5000);
-        robot.setDrivePower(0.0,0.0,0.0,0.0);
-        telemetry.addData("", "Left back drive");
-        telemetry.addData("Current Position", robot.leftBack.getCurrentPosition());
-        telemetry.update();
-        sleep(5000);
-
-        telemetry.addData("", "Right back drive");
-        telemetry.addData("Current Position", robot.rightBack.getCurrentPosition());
-        telemetry.update();
-        robot.setDrivePower(0.0,0.0,0.0,0.5);
-        sleep(5000);
-        robot.setDrivePower(0.0,0.0,0.0,0.0);
-        telemetry.addData("", "Right back drive");
-        telemetry.addData("Current Position", robot.rightBack.getCurrentPosition());
-        telemetry.update();
-        sleep(1000);
     }
 }

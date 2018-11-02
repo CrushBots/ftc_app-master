@@ -3,9 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import static java.lang.Thread.sleep;
+import static org.firstinspires.ftc.teamcode.CrushyHardware.SAMPLE_ARM_UP_POS;
 
 /**
- * Created by CrushBots for the 2017-2018 FTC season
+ * Created by CrushBots for the 2018-2019 FTC season
  */
 
 @TeleOp(name="Driver TeleOp", group="CrushBots")
@@ -19,8 +20,7 @@ public class DriverTeleOp extends CommonFunctions {
     public void loop() {
         telemetry.addData("Status", "Running: " + runtime.toString());
 
-        robot.jewelArmUpDownServo.setPosition(robot.JEWEL_ARM_SERVO_UP_POS);
-        robot.jewelArmLeftRightServo.setPosition(robot.JEWEL_ARM_SERVO_MIDDLE_POS);
+        robot.sampleArmServo.setPosition(SAMPLE_ARM_UP_POS);
 
         double drive;
         double strafe;
@@ -58,88 +58,81 @@ public class DriverTeleOp extends CommonFunctions {
         /******************************************************************
          * FLOP PULLEY - UP
          ******************************************************************/
-        if (!robot.flopPulleyUp && gamepad2.right_stick_y < -0.5) {
-            startMotorUsingEncoder(robot.flopPulley, 0.5);
-            robot.flopRamp.setPower(-0.1);
-        }
-        if (robot.flopPulley.getPower() > 0.0){
-            robot.flopRamp.setPower(-0.1);
-        }
-        robot.flopPulleyUp = stopPulleyMotor(robot.flopPulleyUp);
+        //if (!robot.flopPulleyUp && gamepad2.right_stick_y < -0.5) {
+        //    startMotorUsingEncoder(robot.flopPulley, 0.5);
+        //    robot.flopRamp.setPower(-0.1);
+        //}
+        //if (robot.flopPulley.getPower() > 0.0){
+        //    robot.flopRamp.setPower(-0.1);
+        //}
+        //robot.flopPulleyUp = stopPulleyMotor(robot.flopPulleyUp);
 
         /******************************************************************
          * FLOP PULLEY - DOWN
          ******************************************************************/
-        if (robot.flopPulleyUp && gamepad2.right_stick_y > 0.5) {
-            startMotorUsingEncoder(robot.flopPulley, -0.1);
-        }
-        robot.flopPulleyUp = stopMotorAtPosition(robot.flopPulley, -1300, robot.flopPulleyUp);
+        //if (robot.flopPulleyUp && gamepad2.right_stick_y > 0.5) {
+        //    startMotorUsingEncoder(robot.flopPulley, -0.1);
+        //}
+        //robot.flopPulleyUp = stopMotorAtPosition(robot.flopPulley, -1300, robot.flopPulleyUp);
 
         /******************************************************************
          * FLOP RAMP - FORWARD
          ******************************************************************/
-        if (!robot.flopRampForward && gamepad2.left_stick_y < -0.5) {
-            startMotorUsingEncoder(robot.flopRamp, -0.3);
-        }
-        robot.flopRampForward = stopMotorAtPosition(robot.flopRamp, -250, robot.flopRampForward);
+        //if (!robot.flopRampForward && gamepad2.left_stick_y < -0.5) {
+        //    startMotorUsingEncoder(robot.flopRamp, -0.3);
+        //}
+        //robot.flopRampForward = stopMotorAtPosition(robot.flopRamp, -250, robot.flopRampForward);
 
         /******************************************************************
          * FLOP RAMP - BACK
          ******************************************************************/
-        if (robot.flopRampForward && gamepad2.left_stick_y > 0.5) {
-            startMotorUsingEncoder(robot.flopRamp, 0.15);
-        }
-        robot.flopRampForward = stopMotorAtPosition(robot.flopRamp, 245, robot.flopRampForward);
+        //if (robot.flopRampForward && gamepad2.left_stick_y > 0.5) {
+        //    startMotorUsingEncoder(robot.flopRamp, 0.15);
+        //}
+        //robot.flopRampForward = stopMotorAtPosition(robot.flopRamp, 245, robot.flopRampForward);
 
         /******************************************************************
          * RELIC ARM - OUT
          ******************************************************************/
-        if (!robot.relicArmOut && gamepad2.left_bumper) {
-            startMotorUsingEncoder(robot.relicArm, 1.0);
-        }
-        robot.relicArmOut = stopMotorAtPosition(robot.relicArm, 9000, robot.relicArmOut);
+        //if (!robot.relicArmOut && gamepad2.left_bumper) {
+        //    startMotorUsingEncoder(robot.relicArm, 1.0);
+        //}
+        //robot.relicArmOut = stopMotorAtPosition(robot.relicArm, 9000, robot.relicArmOut);
 
         /******************************************************************
          * RELIC ARM - IN
          ******************************************************************/
-        if (robot.relicArmOut && gamepad2.right_bumper) {
-            startMotorUsingEncoder(robot.relicArm, -0.5);
-        }
-        telemetry.addData("RelicArmOut",robot.relicArm.getPower());
+        //if (robot.relicArmOut && gamepad2.right_bumper) {
+        //    startMotorUsingEncoder(robot.relicArm, -0.5);
+        //}
+        //telemetry.addData("RelicArmOut",robot.relicArm.getPower());
 
-        robot.relicArmOut = stopMotorAtPosition(robot.relicArm, -9000, robot.relicArmOut);
+        //robot.relicArmOut = stopMotorAtPosition(robot.relicArm, -9000, robot.relicArmOut);
 
         /******************************************************************
          * RELIC WRIST
          ******************************************************************/
         if (gamepad2.dpad_up) {
-            robot.relicWristServo.setPosition(robot.RELIC_WRIST_SERVO_UP_POS);
         }
         if (gamepad2.dpad_down) {
-            robot.relicWristServo.setPosition(robot.RELIC_WRIST_SERVO_DOWN_POS);
         }
 
         /******************************************************************
          * RELIC HAND
          ******************************************************************/
         if (gamepad2.dpad_left) {
-            robot.relicHandServo.setPosition(robot.RELIC_HAND_SERVO_OPEN_POS);
         }
         if (gamepad2.dpad_right) {
-            robot.relicHandServo.setPosition(robot.RELIC_HAND_SERVO_CLOSE_POS);
         }
 
         /******************************************************************
          * INTAKE
          ******************************************************************/
         if (gamepad2.b) {
-            robot.turnOnIntake();
         }
         if (gamepad2.a) {
-            robot.turnOffIntake();
         }
         if (gamepad1.b) {
-            robot.backwardsIntake();
         }
     }
 }

@@ -50,7 +50,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @Autonomous(name="Test VuMark", group ="Test")
 //@Disabled
-public class Test_VuMarkIdentification extends Auto_CommonFunctions {
+public class Test_VuMarkIdentification extends Auto_SeasonFunctions {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -73,12 +73,12 @@ public class Test_VuMarkIdentification extends Auto_CommonFunctions {
              * RelicRecoveryVuMark is an enum which can have the following values:
              * UNKNOWN, LEFT, CENTER, and RIGHT.
              */
-            readPictograph();
+            //readPictograph();
 
-            telemetry.addData("VuMark", "%s visible", robot.pictograph);
+            //telemetry.addData("VuMark", "%s visible", robot.pictograph);
             telemetry.update();
 
-            robot.pictograph = RelicRecoveryVuMark.UNKNOWN;
+            //robot.pictograph = RelicRecoveryVuMark.UNKNOWN;
         }
     }
 }

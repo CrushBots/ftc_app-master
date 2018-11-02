@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Test Servo Positions", group="Test")
 //@Disabled
-public class Test_ServoPositions extends Auto_CommonFunctions {
+public class Test_ServoPositions extends Auto_SeasonFunctions {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -30,27 +30,55 @@ public class Test_ServoPositions extends Auto_CommonFunctions {
         // Abort this loop is started or stopped.
         while (!(isStarted() || isStopRequested())) {
         }
-        moveServo(robot.jewelArmUpDownServo, robot.JEWEL_ARM_SERVO_DOWN_POS);
 
-        // Test 1: Jewel Arm - Up / Down
-        telemetry.addData("Testing ", "Left / Right Servo");
+        telemetry.addData("Testing ", "Servo Positions");
         telemetry.update();
         sleep(2500);
 
-        moveServo(robot.jewelArmLeftRightServo, robot.JEWEL_ARM_SERVO_RIGHT_POS);
-        telemetry.addData("", "RIGHT Position");
+        // Test: Sample Arm
+        moveServo(robot.sampleArmServo, robot.SAMPLE_ARM_OUT_POS);
+        telemetry.addData("Sample Arm ", " Out Positions");
         telemetry.update();
         sleep(2500);
 
-        moveServo(robot.jewelArmLeftRightServo, robot.JEWEL_ARM_SERVO_MIDDLE_POS);
-        telemetry.addData("", "MIDDLE Position");
+
+        moveServo(robot.centerServoScanner, robot.CENTER_SCANNER_RIGHT_POS);
+        telemetry.addData("Center Scanner ", " Right Positions");
         telemetry.update();
         sleep(2500);
 
-        moveServo(robot.jewelArmLeftRightServo, robot.JEWEL_ARM_SERVO_LEFT_POS);
-        telemetry.addData("", "LEFT Position");
+        moveServo(robot.centerServoScanner,robot.CENTER_SCANNER_LEFT_POS);
+        telemetry.addData("Center Scanner ", " Left Positions");
         telemetry.update();
         sleep(2500);
+
+        moveServo(robot.centerServoScanner, robot.CENTER_SCANNER_FRONT_POS);
+        telemetry.addData("Center Scanner ", " Front Positions");
+        telemetry.update();
+        sleep(2500);
+
+        moveServo(robot.leftServoScanner, robot.LEFT_SCANNER_RIGHT_POS);
+        telemetry.addData("Left Scanner ", " Right Positions");
+        telemetry.update();
+        sleep(2500);
+
+        moveServo(robot.leftServoScanner,robot.LEFT_SCANNER_LEFT_POS);
+        telemetry.addData("Left Scanner ", " Left Positions");
+        telemetry.update();
+        sleep(2500);
+
+        moveServo(robot.leftServoScanner,robot.LEFT_SCANNER_FRONT_POS);
+        telemetry.addData("Left Scanner ", " Front Positions");
+        telemetry.update();
+        sleep(2500);
+
+
+        moveServo(robot.sampleArmServo,robot.SAMPLE_ARM_UP_POS);
+        telemetry.addData("Sample Arm ", " Up Positions");
+        telemetry.update();
+        sleep(2500);
+
+
 
     }
 }
