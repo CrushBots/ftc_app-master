@@ -3,6 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import static org.firstinspires.ftc.teamcode.CrushyHardware.CENTER_SCANNER_LEFT_POS;
+import static org.firstinspires.ftc.teamcode.CrushyHardware.CENTER_SCANNER_RIGHT_POS;
+import static org.firstinspires.ftc.teamcode.CrushyHardware.LEFT_SCANNER_LEFT_POS;
+import static org.firstinspires.ftc.teamcode.CrushyHardware.LEFT_SCANNER_RIGHT_POS;
 import static org.firstinspires.ftc.teamcode.CrushyHardware.SAMPLE_ARM_OUT_POS;
 import static org.firstinspires.ftc.teamcode.CrushyHardware.SAMPLE_ARM_UP_POS;
 
@@ -47,13 +51,15 @@ public class Auto_Left extends Auto_SeasonFunctions {
         sleep(500);
 
         // Step 4: Figure out where the Gold Mineral is
-        if (isYellow(robot.centerLightSensor)){
+        moveServo(robot.centerServoScanner,CENTER_SCANNER_LEFT_POS);
+        if (scanForGold(robot.centerServoScanner, CENTER_SCANNER_RIGHT_POS)) {
             forwardDriveInches(30);
         }
         else {
             moveServo(robot.sampleArmServo,SAMPLE_ARM_OUT_POS);
+            moveServo(robot.leftServoScanner,LEFT_SCANNER_LEFT_POS);
             sleep(500);
-            if (isYellow(robot.leftLightSensor)){
+            if (scanForGold(robot.leftServoScanner, LEFT_SCANNER_RIGHT_POS)) {
                 moveServo(robot.sampleArmServo,SAMPLE_ARM_UP_POS);
                 backwardDriveInches(5);
                 turnLeft(40);

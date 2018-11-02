@@ -33,52 +33,47 @@ public class Test_ServoPositions extends Auto_SeasonFunctions {
 
         telemetry.addData("Testing ", "Servo Positions");
         telemetry.update();
-        sleep(2500);
+        sleep(500);
 
         // Test: Sample Arm
         moveServo(robot.sampleArmServo, robot.SAMPLE_ARM_OUT_POS);
         telemetry.addData("Sample Arm ", " Out Positions");
         telemetry.update();
-        sleep(2500);
-
+        sleep(500);
 
         moveServo(robot.centerServoScanner, robot.CENTER_SCANNER_RIGHT_POS);
         telemetry.addData("Center Scanner ", " Right Positions");
         telemetry.update();
-        sleep(2500);
+        sleep(500);
 
         moveServo(robot.centerServoScanner,robot.CENTER_SCANNER_LEFT_POS);
         telemetry.addData("Center Scanner ", " Left Positions");
         telemetry.update();
-        sleep(2500);
+        sleep(500);
 
         moveServo(robot.centerServoScanner, robot.CENTER_SCANNER_FRONT_POS);
         telemetry.addData("Center Scanner ", " Front Positions");
         telemetry.update();
-        sleep(2500);
+        sleep(500);
 
         moveServo(robot.leftServoScanner, robot.LEFT_SCANNER_RIGHT_POS);
         telemetry.addData("Left Scanner ", " Right Positions");
         telemetry.update();
-        sleep(2500);
+        sleep(500);
 
         moveServo(robot.leftServoScanner,robot.LEFT_SCANNER_LEFT_POS);
         telemetry.addData("Left Scanner ", " Left Positions");
         telemetry.update();
-        sleep(2500);
+        sleep(500);
 
         moveServo(robot.leftServoScanner,robot.LEFT_SCANNER_FRONT_POS);
         telemetry.addData("Left Scanner ", " Front Positions");
         telemetry.update();
-        sleep(2500);
-
+        sleep(500);
 
         moveServo(robot.sampleArmServo,robot.SAMPLE_ARM_UP_POS);
         telemetry.addData("Sample Arm ", " Up Positions");
         telemetry.update();
-        sleep(2500);
-
-
-
+        sleep(500);
     }
 }
